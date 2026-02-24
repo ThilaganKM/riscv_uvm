@@ -20,7 +20,7 @@ module tb_top;
     // DUT
     //--------------------------------------------------
 
-    pc dut (
+    program_counter dut (
         .clk    (clk),
         .reset  (pcif.reset),
         .en     (pcif.en),
