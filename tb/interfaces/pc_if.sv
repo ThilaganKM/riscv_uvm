@@ -18,7 +18,8 @@ interface pc_if(input logic clk);
         input reset,
         input en,
         input PCNext,
-        input PC
+        input PC,
+        input clk
     );
 
 endinterface
