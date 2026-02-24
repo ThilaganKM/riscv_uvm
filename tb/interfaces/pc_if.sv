@@ -11,7 +11,8 @@ interface pc_if(input logic clk);
         output reset,
         output en,
         output PCNext,
-        input  PC
+        input  PC, 
+        input clk
     );
 
     modport MONITOR (
