@@ -1,3 +1,5 @@
+import uvm_pkg::*;
+`include "uvm_macros.svh"
 class pc_sequencer extends uvm_sequencer #(pc_txn);
 
     `uvm_component_utils(pc_sequencer)

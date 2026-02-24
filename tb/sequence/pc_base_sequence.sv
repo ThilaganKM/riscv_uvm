@@ -1,3 +1,5 @@
+import uvm_pkg::*;
+`include "uvm_macros.svh"
 class pc_base_sequence extends uvm_sequence #(pc_txn);
 
     `uvm_object_utils(pc_base_sequence)
