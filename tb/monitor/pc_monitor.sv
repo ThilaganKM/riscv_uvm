@@ -34,8 +34,8 @@ class pc_monitor extends uvm_monitor;
             pkt.reset  = vif.reset;
             pkt.en     = vif.en;
             pkt.PCNext = vif.PCNext;
+            pkt.PC     = vif.PC;
 
-            pkt.set_id_info(this);
 
             ap.write(pkt);
 
