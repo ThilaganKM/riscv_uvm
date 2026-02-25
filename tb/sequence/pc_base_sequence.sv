@@ -1,37 +1,47 @@
-virtual task body();
+class pc_base_sequence extends uvm_sequence #(pc_seq_item);
 
-    pc_seq_item pkt;
+    `uvm_object_utils(pc_base_sequence)
 
-    //------------------------------------------
-    // Apply RESET ONCE
-    //------------------------------------------
+    function new(string name = "pc_base_sequence");
+        super.new(name);
+    endfunction
 
-    pkt = pc_seq_item::type_id::create("pkt");
+    virtual task body();
 
-    start_item(pkt);
-    pkt.reset  = 1;
-    pkt.en     = 0;
-    pkt.PCNext = 0;
-    finish_item(pkt);
+        pc_seq_item pkt;
 
-    //------------------------------------------
-    // Normal Operation
-    //------------------------------------------
-
-    repeat (20) begin
+        //------------------------------------------
+        // RESET PHASE
+        //------------------------------------------
 
         pkt = pc_seq_item::type_id::create("pkt");
 
         start_item(pkt);
-
-        if (!pkt.randomize() with {
-            reset == 0;   // ✅ NEVER random reset
-            en    == 1;   // ✅ Always update PC
-        })
-            `uvm_error("SEQ", "Randomization failed")
-
+        pkt.reset  = 1;
+        pkt.en     = 0;
+        pkt.PCNext = 0;
         finish_item(pkt);
 
-    end
+        //------------------------------------------
+        // NORMAL OPERATION
+        //------------------------------------------
 
-endtask
+        repeat (20) begin
+
+            pkt = pc_seq_item::type_id::create("pkt");
+
+            start_item(pkt);
+
+            if (!pkt.randomize() with {
+                reset == 0;
+                en    == 1;
+            })
+                `uvm_error("SEQ", "Randomization failed")
+
+            finish_item(pkt);
+
+        end
+
+    endtask
+
+endclass
