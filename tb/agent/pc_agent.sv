@@ -1,5 +1,3 @@
-import uvm_pkg::*;
-`include "uvm_macros.svh"
 class pc_agent extends uvm_agent;
 
     `uvm_component_utils(pc_agent)

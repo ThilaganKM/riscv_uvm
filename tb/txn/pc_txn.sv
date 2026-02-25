@@ -1,7 +1,5 @@
 package pc_txn_pkg;
 
-  import uvm_pkg::*;
-  `include "uvm_macros.svh"
 
   class pc_txn extends uvm_sequence_item;
 

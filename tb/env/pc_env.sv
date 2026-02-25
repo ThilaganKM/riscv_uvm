@@ -1,5 +1,3 @@
-import uvm_pkg::*;
-`include "uvm_macros.svh"
 class pc_env extends uvm_env;
 
     `uvm_component_utils(pc_env)

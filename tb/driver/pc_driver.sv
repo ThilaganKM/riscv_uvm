@@ -1,6 +1,3 @@
-import pc_txn_pkg::*;
-import uvm_pkg::*;
-`include "uvm_macros.svh"
 class pc_driver extends uvm_driver #(pc_txn);
 
     `uvm_component_utils(pc_driver)

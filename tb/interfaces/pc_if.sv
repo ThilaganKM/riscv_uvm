@@ -1,5 +1,3 @@
-import uvm_pkg::*;
-`include "uvm_macros.svh"
 interface pc_if(input logic clk);
 
     logic reset;
