@@ -1,4 +1,4 @@
-class pc_sequencer extends uvm_sequencer #(pc_txn);
+class pc_sequencer extends uvm_sequencer #(pc_seq_item);
 
     `uvm_component_utils(pc_sequencer)
 

@@ -1,4 +1,4 @@
-class pc_base_sequence extends uvm_sequence #(pc_txn);
+class pc_base_sequence extends uvm_sequence #(pc_seq_item);
 
     `uvm_object_utils(pc_base_sequence)
 
@@ -8,11 +8,11 @@ class pc_base_sequence extends uvm_sequence #(pc_txn);
 
     virtual task body();
 
-        pc_txn pkt;
+        pc_seq_item pkt;
 
         repeat (20) begin
 
-            pkt = pc_txn::type_id::create("pkt");
+            pkt = pc_seq_item::type_id::create("pkt");
 
             start_item(pkt);
 

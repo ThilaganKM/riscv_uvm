@@ -1,4 +1,4 @@
-class pc_driver extends uvm_driver #(pc_txn);
+class pc_driver extends uvm_driver #(pc_seq_item);
 
     `uvm_component_utils(pc_driver)
 
@@ -17,7 +17,7 @@ class pc_driver extends uvm_driver #(pc_txn);
 
     virtual task run_phase(uvm_phase phase);
 
-        pc_txn pkt;
+        pc_seq_item pkt;
 
         forever begin
 

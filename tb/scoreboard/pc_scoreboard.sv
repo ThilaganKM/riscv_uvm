@@ -2,7 +2,7 @@ class pc_scoreboard extends uvm_scoreboard;
 
     `uvm_component_utils(pc_scoreboard)
 
-    uvm_analysis_imp #(pc_txn, pc_scoreboard) ap_imp;
+    uvm_analysis_imp #(pc_seq_item, pc_scoreboard) ap_imp;
 
     logic [31:0] expected_pc;
 
@@ -18,7 +18,7 @@ class pc_scoreboard extends uvm_scoreboard;
         expected_pc = 32'h00000000;
     endfunction
 
-    virtual function void write(pc_txn pkt);
+    virtual function void write(pc_seq_item pkt);
 
         logic [31:0] golden_pc;
 

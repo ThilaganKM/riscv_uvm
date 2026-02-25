@@ -4,7 +4,7 @@ class pc_monitor extends uvm_monitor;
 
     virtual pc_if.MONITOR vif;
 
-    uvm_analysis_port #(pc_txn) ap;
+    uvm_analysis_port #(pc_seq_item) ap;
 
     function new(string name = "pc_monitor", uvm_component parent);
         super.new(name, parent);
@@ -21,13 +21,13 @@ class pc_monitor extends uvm_monitor;
 
     virtual task run_phase(uvm_phase phase);
 
-        pc_txn pkt;
+        pc_seq_item pkt;
 
         forever begin
 
             @(posedge vif.clk);
 
-            pkt = pc_txn::type_id::create("pkt");
+            pkt = pc_seq_item::type_id::create("pkt");
 
             pkt.reset  = vif.reset;
             pkt.en     = vif.en;
