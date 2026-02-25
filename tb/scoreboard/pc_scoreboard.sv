@@ -5,6 +5,7 @@ class pc_scoreboard extends uvm_scoreboard;
     uvm_analysis_imp #(pc_seq_item, pc_scoreboard) ap_imp;
 
     logic [31:0] expected_pc;
+    logic [31:0] golden_pc;
 
     function new(string name = "pc_scoreboard", uvm_component parent);
         super.new(name, parent);
@@ -20,10 +21,18 @@ class pc_scoreboard extends uvm_scoreboard;
 
     virtual function void write(pc_seq_item pkt);
 
-        logic [31:0] golden_pc;
+        //--------------------------------------------------
+        // ✅ FIRST: Compare CURRENT PC with stored expected
+        //--------------------------------------------------
+
+        if (pkt.PC !== expected_pc)
+            `uvm_error("SB", $sformatf(
+                "PC MISMATCH: Expected = %0h, Observed = %0h",
+                expected_pc, pkt.PC
+            ))
 
         //--------------------------------------------------
-        // Golden Reference Model
+        // ✅ THEN: Compute NEXT expected PC
         //--------------------------------------------------
 
         if (pkt.reset)
@@ -34,17 +43,7 @@ class pc_scoreboard extends uvm_scoreboard;
             golden_pc = expected_pc;
 
         //--------------------------------------------------
-        // Comparison
-        //--------------------------------------------------
-
-        if (pkt.PC !== golden_pc)
-            `uvm_error("SB", $sformatf(
-                "PC MISMATCH: Expected = %0h, Observed = %0h",
-                golden_pc, pkt.PC
-            ))
-
-        //--------------------------------------------------
-        // Update State
+        // ✅ Update state for NEXT cycle
         //--------------------------------------------------
 
         expected_pc = golden_pc;
