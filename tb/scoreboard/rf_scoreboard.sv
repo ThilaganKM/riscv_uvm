@@ -63,21 +63,21 @@ class rf_scoreboard extends uvm_scoreboard;
     // ✅ MODEL SYNCHRONOUS WRITE
     //--------------------------------------------------
 
+//--------------------------------------------------
+// ✅ MODEL ASYNC READS FIRST
+//--------------------------------------------------
+
+    expected_rd1 = (pkt.A1 != 0) ? golden_rf[pkt.A1] : 0;
+    expected_rd2 = (pkt.A2 != 0) ? golden_rf[pkt.A2] : 0;
+
+    //--------------------------------------------------
+    // ✅ MODEL SYNC WRITE AFTER
+    //--------------------------------------------------
+
     if (pkt.we && pkt.A3 != 0)
-      golden_rf[pkt.A3] = pkt.wd3;
+        golden_rf[pkt.A3] = pkt.wd3;
 
-    //--------------------------------------------------
-    // ✅ ENFORCE x0 IMMUTABILITY
-    //--------------------------------------------------
-
-    golden_rf[0] = 32'd0;
-
-    //--------------------------------------------------
-    // ✅ MODEL ASYNCHRONOUS READS
-    //--------------------------------------------------
-
-    expected_rd1 = (pkt.A1 != 0) ? golden_rf[pkt.A1] : 32'd0;
-    expected_rd2 = (pkt.A2 != 0) ? golden_rf[pkt.A2] : 32'd0;
+    golden_rf[0] = 0;
 
     //--------------------------------------------------
     // ✅ COMPARISON
