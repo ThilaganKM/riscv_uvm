@@ -42,4 +42,29 @@ package riscv_txn_pkg;
 
   endclass
 
+  //--------------------------------------------------
+  // ALU Transaction ✅ ADDED
+  //--------------------------------------------------
+
+  class alu_seq_item extends uvm_sequence_item;
+
+    rand bit [31:0] SrcA;
+    rand bit [31:0] SrcB;
+    rand bit [2:0]  ALUControl;
+
+         bit [31:0] ALUResult;
+         bit        Zero;
+
+    constraint alu_ctrl_c {
+      ALUControl inside {3'b000, 3'b001, 3'b010, 3'b011, 3'b101};
+    }
+
+    `uvm_object_utils(alu_seq_item)
+
+    function new(string name = "alu_seq_item");
+      super.new(name);
+    endfunction
+
+  endclass
+
 endpackage
