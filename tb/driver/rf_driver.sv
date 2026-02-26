@@ -1,5 +1,6 @@
 import uvm_pkg::*;
 import riscv_txn_pkg::*;
+`include "uvm_macros.svh"
 class rf_driver extends uvm_driver #(rf_seq_item);
 
   `uvm_component_utils(rf_driver)

@@ -1,5 +1,6 @@
 import uvm_pkg::*;
 import riscv_txn_pkg::*;
+`include "uvm_macros.svh"
 class rf_scoreboard extends uvm_scoreboard;
 
   `uvm_component_utils(rf_scoreboard)
