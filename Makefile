@@ -16,7 +16,7 @@ UVM_HOME = /home/cad/eda/Questa_2019/questasim/verilog_src/uvm-1.1d/src
 #--------------------------------------------------
 
 RTL = \
- rtl/pc.sv \
+ rtl/PC.sv \
  rtl/register_file.sv
 
 #--------------------------------------------------
