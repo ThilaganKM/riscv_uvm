@@ -32,7 +32,7 @@ package pc_tb_pkg;
   `include "test/rf_test.sv"
 
   //--------------------------------------------------
-  // ALU ✅ ADD BLOCK
+  // ALU
   //--------------------------------------------------
 
   `include "sequence/alu_base_sequence.sv"
@@ -43,5 +43,18 @@ package pc_tb_pkg;
   `include "agent/alu_agent.sv"
   `include "env/alu_env.sv"
   `include "test/alu_test.sv"
+
+  //--------------------------------------------------
+  // ALU DECODER ✅ ADDED
+  //--------------------------------------------------
+
+  `include "sequence/alu_dec_base_sequence.sv"
+  `include "sequencer/alu_dec_sequencer.sv"
+  `include "driver/alu_dec_driver.sv"
+  `include "monitor/alu_dec_monitor.sv"
+  `include "scoreboard/alu_dec_scoreboard.sv"
+  `include "agent/alu_dec_agent.sv"
+  `include "env/alu_dec_env.sv"
+  `include "test/alu_dec_test.sv"
 
 endpackage

@@ -18,7 +18,7 @@ module tb_top;
     pc_if  pcif(clk);
     rf_if  rfif(clk);
     alu_if aluif(clk);     // ✅ ADD ALU INTERFACE
-
+    alu_dec_if alu_dec_if_inst(clk);
     //--------------------------------------------------
     // DUTs
     //--------------------------------------------------
@@ -54,6 +54,14 @@ module tb_top;
         .Zero       (aluif.Zero)
     );
 
+    Alu_decoder alu_dec_dut (
+        .opb5       (alu_dec_if_inst.opb5),
+        .funct3     (alu_dec_if_inst.funct3),
+        .funct7b5   (alu_dec_if_inst.funct7b5),
+        .ALUOp      (alu_dec_if_inst.ALUOp),
+        .ALUControl (alu_dec_if_inst.ALUControl)
+    );
+
     //--------------------------------------------------
     // UVM Configuration
     //--------------------------------------------------
@@ -69,7 +77,7 @@ module tb_top;
         uvm_config_db #(virtual pc_if )::set(null, "*", "vif", pcif);
         uvm_config_db #(virtual rf_if )::set(null, "*", "vif", rfif);
         uvm_config_db #(virtual alu_if)::set(null, "*", "vif", aluif); // ✅ ADD
-
+        uvm_config_db #(virtual alu_dec_if)::set(null, "*", "vif", alu_dec_if_inst);
         //------------------------------------------
         // Run Test
         //------------------------------------------

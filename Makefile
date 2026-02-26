@@ -18,7 +18,8 @@ UVM_HOME = /home/cad/eda/Questa_2019/questasim/verilog_src/uvm-1.1d/src
 RTL = \
  rtl/PC.sv \
  rtl/register_file.sv \
- rtl/ALU.sv
+ rtl/ALU.sv \
+ rtl/Alu_decoder.sv
 
 #--------------------------------------------------
 # Interface Files
@@ -27,7 +28,8 @@ RTL = \
 INTERFACES = \
  tb/interfaces/pc_if.sv \
  tb/interfaces/rf_if.sv \
- tb/interfaces/alu_if.sv
+ tb/interfaces/alu_if.sv \
+ tb/interfaces/alu_dec_if.sv
 
 #--------------------------------------------------
 # Transaction Package
@@ -75,6 +77,9 @@ rf:
 
 alu:
 	$(SIM) -c tb_top +UVM_TESTNAME=alu_test -do "run -all"
+
+alu_dec:
+	$(SIM) -c tb_top +UVM_TESTNAME=alu_dec_test -do "run -all"
 
 #--------------------------------------------------
 # Clean Build

@@ -43,7 +43,7 @@ package riscv_txn_pkg;
   endclass
 
   //--------------------------------------------------
-  // ALU Transaction ✅ ADDED
+  // ALU Transaction
   //--------------------------------------------------
 
   class alu_seq_item extends uvm_sequence_item;
@@ -62,6 +62,31 @@ package riscv_txn_pkg;
     `uvm_object_utils(alu_seq_item)
 
     function new(string name = "alu_seq_item");
+      super.new(name);
+    endfunction
+
+  endclass
+
+  //--------------------------------------------------
+  // ALU DECODER Transaction ✅ ADDED
+  //--------------------------------------------------
+
+  class alu_dec_seq_item extends uvm_sequence_item;
+
+    rand bit        opb5;
+    rand bit [2:0]  funct3;
+    rand bit        funct7b5;
+    rand bit [1:0]  ALUOp;
+
+         bit [2:0]  ALUControl;
+
+    constraint aluop_c {
+      ALUOp inside {2'b00, 2'b01, 2'b10};
+    }
+
+    `uvm_object_utils(alu_dec_seq_item)
+
+    function new(string name = "alu_dec_seq_item");
       super.new(name);
     endfunction
 
