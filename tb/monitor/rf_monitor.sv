@@ -53,7 +53,6 @@ class rf_monitor extends uvm_monitor;
       //------------------------------------------
 
       @(posedge vif.clk);
-
       //------------------------------------------
       // Create transaction
       //------------------------------------------
@@ -63,7 +62,7 @@ class rf_monitor extends uvm_monitor;
       //------------------------------------------
       // Capture DUT signals
       //------------------------------------------
-
+      #1;
       item.A1  = vif.A1;
       item.A2  = vif.A2;
       item.A3  = vif.A3;
