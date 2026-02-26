@@ -52,6 +52,18 @@ module tb_top;
     initial begin
 
         clk = 0;
+        //------------------------------------------
+        // RESET SEQUENCE ✅ CRITICAL
+        //------------------------------------------
+
+        rfif.reset = 1;     // Assert reset
+        pcif.reset = 1;     // (optional but good practice)
+
+        #20;
+
+        rfif.reset = 0;     // Deassert reset
+        pcif.reset = 0;
+
 
         //------------------------------------------
         // Pass Interfaces
