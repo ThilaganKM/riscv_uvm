@@ -15,8 +15,9 @@ module tb_top;
     // Interfaces
     //--------------------------------------------------
 
-    pc_if pcif(clk);
-    rf_if rfif(clk);      // ✅ ADD RF INTERFACE
+    pc_if  pcif(clk);
+    rf_if  rfif(clk);
+    alu_if aluif(clk);     // ✅ ADD ALU INTERFACE
 
     //--------------------------------------------------
     // DUTs
@@ -30,7 +31,7 @@ module tb_top;
         .PC     (pcif.PC)
     );
 
-    register_file rf_dut (   // ✅ ADD REGISTER FILE
+    register_file rf_dut (
         .clk   (clk),
         .reset (rfif.reset),
 
@@ -45,6 +46,14 @@ module tb_top;
         .rd2 (rfif.rd2)
     );
 
+    ALU alu_dut (              // ✅ ADD ALU DUT
+        .SrcA       (aluif.SrcA),
+        .SrcB       (aluif.SrcB),
+        .ALUControl (aluif.ALUControl),
+        .ALUResult  (aluif.ALUResult),
+        .Zero       (aluif.Zero)
+    );
+
     //--------------------------------------------------
     // UVM Configuration
     //--------------------------------------------------
@@ -52,14 +61,14 @@ module tb_top;
     initial begin
 
         clk = 0;
-        
 
         //------------------------------------------
         // Pass Interfaces
         //------------------------------------------
 
-        uvm_config_db #(virtual pc_if)::set(null, "*", "vif", pcif);
-        uvm_config_db #(virtual rf_if)::set(null, "*", "vif", rfif);
+        uvm_config_db #(virtual pc_if )::set(null, "*", "vif", pcif);
+        uvm_config_db #(virtual rf_if )::set(null, "*", "vif", rfif);
+        uvm_config_db #(virtual alu_if)::set(null, "*", "vif", aluif); // ✅ ADD
 
         //------------------------------------------
         // Run Test
