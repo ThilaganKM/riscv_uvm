@@ -1,62 +1,48 @@
-import uvm_pkg::*;  
-import pc_tb_pkg::*;
-module tb_top;
+interface rf_if(input logic clk);
 
-    //--------------------------------------------------
-    // Clock
-    //--------------------------------------------------
+  logic reset;          // ✅ ADD RESET
 
-    logic clk;
+  logic [4:0]  A1;
+  logic [4:0]  A2;
+  logic [4:0]  A3;
+  logic [31:0] wd3;
+  logic        we;
 
-    always #5 clk = ~clk;
+  logic [31:0] rd1;
+  logic [31:0] rd2;
 
-    //--------------------------------------------------
-    // Interface
-    //--------------------------------------------------
+  //--------------------------------------------------
+  // DRIVER
+  //--------------------------------------------------
 
-    pc_if pcif(clk);
+  modport DRIVER (
+    output reset,       // ✅ ADD
+    output A1,
+    output A2,
+    output A3,
+    output wd3,
+    output we,
 
-    //--------------------------------------------------
-    // DUT
-    //--------------------------------------------------
+    input rd1,
+    input rd2,
+    input clk
+  );
 
-    program_counter dut (
-        .clk    (clk),
-        .reset  (pcif.reset),
-        .en     (pcif.en),
-        .PCNext (pcif.PCNext),
-        .PC     (pcif.PC)
-    );
+  //--------------------------------------------------
+  // MONITOR
+  //--------------------------------------------------
 
-    //--------------------------------------------------
-    // UVM Configuration
-    //--------------------------------------------------
+  modport MONITOR (
+    input reset,        // ✅ ADD
+    input A1,
+    input A2,
+    input A3,
+    input wd3,
+    input we,
 
-    initial begin
+    input rd1,
+    input rd2,
+    input clk
+  );
 
-        //--------------------------------------------------
-        // Initialize Clock
-        //--------------------------------------------------
-
-        clk = 0;
-
-        //--------------------------------------------------
-        // Pass Interface to UVM
-        //--------------------------------------------------
-
-        uvm_config_db #(virtual pc_if)::set(
-            null,
-            "*",
-            "vif",
-            pcif
-        );
-
-        //--------------------------------------------------
-        // Run Test
-        //--------------------------------------------------
-
-        run_test();
-
-    end
-
-endmodule
+endinterface
