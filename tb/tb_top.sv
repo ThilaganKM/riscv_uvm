@@ -1,5 +1,6 @@
-import uvm_pkg::*;  
+import uvm_pkg::*;
 import pc_tb_pkg::*;
+
 module tb_top;
 
     //--------------------------------------------------
@@ -11,21 +12,37 @@ module tb_top;
     always #5 clk = ~clk;
 
     //--------------------------------------------------
-    // Interface
+    // Interfaces
     //--------------------------------------------------
 
     pc_if pcif(clk);
+    rf_if rfif(clk);      // ✅ ADD RF INTERFACE
 
     //--------------------------------------------------
-    // DUT
+    // DUTs
     //--------------------------------------------------
 
-    program_counter dut (
+    program_counter pc_dut (
         .clk    (clk),
         .reset  (pcif.reset),
         .en     (pcif.en),
         .PCNext (pcif.PCNext),
         .PC     (pcif.PC)
+    );
+
+    register_file rf_dut (   // ✅ ADD REGISTER FILE
+        .clk   (clk),
+        .reset (rfif.reset),
+
+        .A1  (rfif.A1),
+        .A2  (rfif.A2),
+        .A3  (rfif.A3),
+
+        .wd3 (rfif.wd3),
+        .we  (rfif.we),
+
+        .rd1 (rfif.rd1),
+        .rd2 (rfif.rd2)
     );
 
     //--------------------------------------------------
@@ -34,26 +51,18 @@ module tb_top;
 
     initial begin
 
-        //--------------------------------------------------
-        // Initialize Clock
-        //--------------------------------------------------
-
         clk = 0;
 
-        //--------------------------------------------------
-        // Pass Interface to UVM
-        //--------------------------------------------------
+        //------------------------------------------
+        // Pass Interfaces
+        //------------------------------------------
 
-        uvm_config_db #(virtual pc_if)::set(
-            null,
-            "*",
-            "vif",
-            pcif
-        );
+        uvm_config_db #(virtual pc_if)::set(null, "*", "vif", pcif);
+        uvm_config_db #(virtual rf_if)::set(null, "*", "vif", rfif);
 
-        //--------------------------------------------------
+        //------------------------------------------
         // Run Test
-        //--------------------------------------------------
+        //------------------------------------------
 
         run_test();
 

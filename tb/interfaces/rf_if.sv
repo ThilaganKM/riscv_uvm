@@ -1,44 +1,62 @@
-interface rf_if(input logic clk);
+import uvm_pkg::*;  
+import pc_tb_pkg::*;
+module tb_top;
 
-  logic [4:0]  A1;
-  logic [4:0]  A2;
-  logic [4:0]  A3;
-  logic [31:0] wd3;
-  logic        we;
+    //--------------------------------------------------
+    // Clock
+    //--------------------------------------------------
 
-  logic [31:0] rd1;
-  logic [31:0] rd2;
+    logic clk;
 
-  //--------------------------------------------------
-  // DRIVER → Drives inputs
-  //--------------------------------------------------
+    always #5 clk = ~clk;
 
-  modport DRIVER (
-    output A1,
-    output A2,
-    output A3,
-    output wd3,
-    output we,
+    //--------------------------------------------------
+    // Interface
+    //--------------------------------------------------
 
-    input rd1,
-    input rd2,
-    input clk
-  );
+    pc_if pcif(clk);
 
-  //--------------------------------------------------
-  // MONITOR → Observes everything
-  //--------------------------------------------------
+    //--------------------------------------------------
+    // DUT
+    //--------------------------------------------------
 
-  modport MONITOR (
-    input A1,
-    input A2,
-    input A3,
-    input wd3,
-    input we,
+    program_counter dut (
+        .clk    (clk),
+        .reset  (pcif.reset),
+        .en     (pcif.en),
+        .PCNext (pcif.PCNext),
+        .PC     (pcif.PC)
+    );
 
-    input rd1,
-    input rd2,
-    input clk
-  );
+    //--------------------------------------------------
+    // UVM Configuration
+    //--------------------------------------------------
 
-endinterface
+    initial begin
+
+        //--------------------------------------------------
+        // Initialize Clock
+        //--------------------------------------------------
+
+        clk = 0;
+
+        //--------------------------------------------------
+        // Pass Interface to UVM
+        //--------------------------------------------------
+
+        uvm_config_db #(virtual pc_if)::set(
+            null,
+            "*",
+            "vif",
+            pcif
+        );
+
+        //--------------------------------------------------
+        // Run Test
+        //--------------------------------------------------
+
+        run_test();
+
+    end
+
+endmodule
