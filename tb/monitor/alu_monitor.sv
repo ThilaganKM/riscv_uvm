@@ -34,6 +34,8 @@ class alu_monitor extends uvm_monitor;
       tx.SrcA       = vif.SrcA;
       tx.SrcB       = vif.SrcB;
       tx.ALUControl = vif.ALUControl;
+      tx.ALUResult  = vif.ALUResult;
+      tx.Zero       = vif.Zero;
 
       // Reuse fields for observed outputs (common lightweight trick)
       // Scoreboard will compute golden result
