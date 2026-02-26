@@ -1,5 +1,6 @@
 import uvm_pkg::*;
 import riscv_txn_pkg::*;
+import pc_tb_pkg::*;
 `include "uvm_macros.svh"
 class rf_agent extends uvm_agent;
 
