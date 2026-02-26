@@ -55,7 +55,7 @@ module tb_top;
         // Run Test
         //--------------------------------------------------
 
-        run_test("pc_test");
+        run_test();
 
     end
 
