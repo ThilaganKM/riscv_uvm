@@ -1,3 +1,5 @@
+import uvm_pkg::*;
+import riscv_txn_pkg::*;
 class rf_scoreboard extends uvm_scoreboard;
 
   `uvm_component_utils(rf_scoreboard)

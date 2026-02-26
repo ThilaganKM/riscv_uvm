@@ -1,3 +1,5 @@
+import uvm_pkg::*;
+import riscv_txn_pkg::*;
 class pc_monitor extends uvm_monitor;
 
     `uvm_component_utils(pc_monitor)

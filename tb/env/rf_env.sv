@@ -1,3 +1,5 @@
+import uvm_pkg::*;
+import riscv_txn_pkg::*;
 class rf_env extends uvm_env;
 
   `uvm_component_utils(rf_env)

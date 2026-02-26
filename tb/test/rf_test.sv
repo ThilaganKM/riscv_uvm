@@ -1,3 +1,5 @@
+import uvm_pkg::*;
+import riscv_txn_pkg::*;
 class rf_test extends uvm_test;
 
   `uvm_component_utils(rf_test)
