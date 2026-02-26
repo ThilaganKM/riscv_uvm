@@ -1,24 +1,31 @@
-interface alu_if(input logic clk);
+interface rf_if(input logic clk);
 
-  logic [31:0] SrcA;
-  logic [31:0] SrcB;
-  logic [2:0]  ALUControl;
+  logic reset;
 
-  logic [31:0] ALUResult;
-  logic        Zero;
+  logic [4:0]  A1;
+  logic [4:0]  A2;
+  logic [4:0]  A3;
+  logic [31:0] wd3;
+  logic        we;
+
+  logic [31:0] rd1;
+  logic [31:0] rd2;
 
   //--------------------------------------------------
   // DRIVER
   //--------------------------------------------------
 
   modport DRIVER (
-    output SrcA,
-    output SrcB,
-    output ALUControl,
+    output reset,
+    output A1,
+    output A2,
+    output A3,
+    output wd3,
+    output we,
 
-    input  ALUResult,
-    input  Zero,
-    input  clk
+    input rd1,
+    input rd2,
+    input clk
   );
 
   //--------------------------------------------------
@@ -26,12 +33,15 @@ interface alu_if(input logic clk);
   //--------------------------------------------------
 
   modport MONITOR (
-    input SrcA,
-    input SrcB,
-    input ALUControl,
+    input reset,
+    input A1,
+    input A2,
+    input A3,
+    input wd3,
+    input we,
 
-    input ALUResult,
-    input Zero,
+    input rd1,
+    input rd2,
     input clk
   );
 
