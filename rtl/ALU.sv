@@ -36,7 +36,7 @@ module ALU(
         case (ALUControl)
             3'b000: ALUResult = SrcA + SrcB;   // ADD
             3'b001: ALUResult = SrcA - SrcB;   // SUB
-            3'b101: ALUResult = SrcA >> SrcB;  // Shift Right
+            3'b101: ALUResult = SrcA >> SrcB[4:0];  // Shift Right
             3'b011: ALUResult = SrcA | SrcB;   // OR
             3'b010: ALUResult = SrcA & SrcB;   // AND
             default: ALUResult = 32'b0;        // Default to 0
