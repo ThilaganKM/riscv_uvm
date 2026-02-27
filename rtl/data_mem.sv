@@ -35,11 +35,6 @@ module data_mem(
     logic [31:0] dm [63:0];
     integer i;
 
-    // Initialize memory to 0
-    initial begin
-        for (i = 0; i < 64; i = i + 1)
-            dm[i] = 32'd0;
-    end
 
     // Asynchronous read
     assign ReadData = dm[A[31:2]];
