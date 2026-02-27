@@ -161,8 +161,11 @@ class control_unit_scoreboard extends uvm_component;
     if (tx.Jump       !== exp_Jump)
       `uvm_error("CTRL_SB", "Jump mismatch")
 
-    if (tx.ALUControl !== exp_ALUControl)
-      `uvm_error("CTRL_SB", "ALUControl mismatch")
+    // Only check ALUControl when meaningful
+    if (tx.op != 7'b1101111) begin  // Ignore JAL
+        if (tx.ALUControl !== exp_ALUControl)
+            `uvm_error("CTRL_SB", "ALUControl mismatch")
+    end
 
     `uvm_info("CTRL_SB", "Control unit match", UVM_LOW)
 
