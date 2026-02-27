@@ -22,6 +22,7 @@ module tb_top;
     fwd_if fwd_if_inst(clk);
     haz_if haz_if_inst(clk);
     main_dec_if main_dec_if_inst(clk);
+    control_unit_if ctrl_if_inst(clk);
     //--------------------------------------------------
     // DUTs
     //--------------------------------------------------
@@ -99,6 +100,21 @@ module tb_top;
     .Branch(main_dec_if_inst.Branch)
     );
 
+    control_unit ctrl_dut (
+    .op(ctrl_if_inst.op),
+    .Zero(ctrl_if_inst.Zero),
+    .funct3(ctrl_if_inst.funct3),
+    .funct7b5(ctrl_if_inst.funct7b5),
+    .Branch(ctrl_if_inst.Branch),
+    .Jump(ctrl_if_inst.Jump),
+    .ResultSrc(ctrl_if_inst.ResultSrc),
+    .MemWrite(ctrl_if_inst.MemWrite),
+    .ImmSrc(ctrl_if_inst.ImmSrc),
+    .RegWrite(ctrl_if_inst.RegWrite),
+    .ALUSrc(ctrl_if_inst.ALUSrc),
+    .ALUControl(ctrl_if_inst.ALUControl)
+    );
+
     //--------------------------------------------------
     // UVM Configuration
     //--------------------------------------------------
@@ -118,6 +134,7 @@ module tb_top;
         uvm_config_db #(virtual fwd_if)::set(null, "*", "vif", fwd_if_inst);
         uvm_config_db #(virtual haz_if)::set(null, "*", "vif", haz_if_inst);
         uvm_config_db #(virtual main_dec_if)::set(null, "*", "vif", main_dec_if_inst);
+        uvm_config_db #(virtual control_unit_if)::set(null, "*", "vif", ctrl_if_inst);
         //------------------------------------------
         // Run Test
         //------------------------------------------

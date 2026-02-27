@@ -95,4 +95,17 @@ package pc_tb_pkg;
   `include "env/main_dec_env.sv"
   `include "test/main_dec_test.sv"
 
+  //--------------------------------------------------
+// CONTROL UNIT
+//--------------------------------------------------
+
+  `include "sequence/control_unit_base_sequence.sv"
+  `include "sequencer/control_unit_sequencer.sv"
+  `include "driver/control_unit_driver.sv"
+  `include "monitor/control_unit_monitor.sv"
+  `include "scoreboard/control_unit_scoreboard.sv"
+  `include "agent/control_unit_agent.sv"
+  `include "env/control_unit_env.sv"
+  `include "test/control_unit_test.sv"
+
 endpackage

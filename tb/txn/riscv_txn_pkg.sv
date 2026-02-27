@@ -194,4 +194,46 @@ package riscv_txn_pkg;
 
   endclass
 
+  //--------------------------------------------------
+// Control Unit Transaction
+//--------------------------------------------------
+
+class ctrl_seq_item extends uvm_sequence_item;
+
+  // Inputs
+  rand bit [6:0] op;
+  rand bit [2:0] funct3;
+  rand bit       funct7b5;
+  rand bit       Zero;
+
+  // Outputs
+  bit Branch;
+  bit Jump;
+  bit [1:0] ResultSrc;
+  bit MemWrite;
+  bit [1:0] ImmSrc;
+  bit RegWrite;
+  bit ALUSrc;
+  bit [2:0] ALUControl;
+
+  // Constrain opcodes to supported subset
+  constraint opcode_c {
+    op inside {
+      7'b0000011,
+      7'b0100011,
+      7'b0110011,
+      7'b1100011,
+      7'b0010011,
+      7'b1101111
+    };
+  }
+
+  `uvm_object_utils(ctrl_seq_item)
+
+  function new(string name = "ctrl_seq_item");
+    super.new(name);
+  endfunction
+
+endclass
+
 endpackage
