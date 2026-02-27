@@ -92,4 +92,35 @@ package riscv_txn_pkg;
 
   endclass
 
+    //--------------------------------------------------
+  // Forwarding Unit Transaction
+  //--------------------------------------------------
+
+  class fwd_seq_item extends uvm_sequence_item;
+
+    // Inputs
+    rand bit [4:0] Rs1E, Rs2E;
+    rand bit [4:0] RdM, RdW;
+    rand bit       RegWriteM, RegWriteW;
+
+    // Observed Outputs
+    bit [1:0] ForwardAE;
+    bit [1:0] ForwardBE;
+
+    // Optional: bias toward non-zero registers
+    constraint reg_range_c {
+      Rs1E inside {[0:31]};
+      Rs2E inside {[0:31]};
+      RdM  inside {[0:31]};
+      RdW  inside {[0:31]};
+    }
+
+    `uvm_object_utils(fwd_seq_item)
+
+    function new(string name = "fwd_seq_item");
+      super.new(name);
+    endfunction
+
+  endclass
+
 endpackage

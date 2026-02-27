@@ -57,4 +57,17 @@ package pc_tb_pkg;
   `include "env/alu_dec_env.sv"
   `include "test/alu_dec_test.sv"
 
+   //--------------------------------------------------
+    // FORWARDING UNIT
+    //--------------------------------------------------
+
+  `include "sequence/fwd_base_sequence.sv"
+  `include "sequencer/fwd_sequencer.sv"
+  `include "driver/fwd_driver.sv"
+  `include "monitor/fwd_monitor.sv"
+  `include "scoreboard/fwd_scoreboard.sv"
+  `include "agent/fwd_agent.sv"
+  `include "env/fwd_env.sv"
+  `include "test/fwd_test.sv"
+
 endpackage

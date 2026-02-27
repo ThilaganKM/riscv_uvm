@@ -19,6 +19,7 @@ module tb_top;
     rf_if  rfif(clk);
     alu_if aluif(clk);     // ✅ ADD ALU INTERFACE
     alu_dec_if alu_dec_if_inst(clk);
+    fwd_if fwd_if_inst(clk);
     //--------------------------------------------------
     // DUTs
     //--------------------------------------------------
@@ -62,6 +63,17 @@ module tb_top;
         .ALUControl (alu_dec_if_inst.ALUControl)
     );
 
+    forwarding_unit fwd_dut (
+    .Rs1E(fwd_if_inst.Rs1E),
+    .Rs2E(fwd_if_inst.Rs2E),
+    .RdM(fwd_if_inst.RdM),
+    .RdW(fwd_if_inst.RdW),
+    .RegWriteM(fwd_if_inst.RegWriteM),
+    .RegWriteW(fwd_if_inst.RegWriteW),
+    .ForwardAE(fwd_if_inst.ForwardAE),
+    .ForwardBE(fwd_if_inst.ForwardBE)
+    );
+
     //--------------------------------------------------
     // UVM Configuration
     //--------------------------------------------------
@@ -78,6 +90,7 @@ module tb_top;
         uvm_config_db #(virtual rf_if )::set(null, "*", "vif", rfif);
         uvm_config_db #(virtual alu_if)::set(null, "*", "vif", aluif); // ✅ ADD
         uvm_config_db #(virtual alu_dec_if)::set(null, "*", "vif", alu_dec_if_inst);
+        uvm_config_db #(virtual fwd_if)::set(null, "*", "vif", fwd_if_inst);
         //------------------------------------------
         // Run Test
         //------------------------------------------
