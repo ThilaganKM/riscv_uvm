@@ -21,6 +21,7 @@ module tb_top;
     alu_dec_if alu_dec_if_inst(clk);
     fwd_if fwd_if_inst(clk);
     haz_if haz_if_inst(clk);
+    main_dec_if main_dec_if_inst(clk);
     //--------------------------------------------------
     // DUTs
     //--------------------------------------------------
@@ -86,6 +87,17 @@ module tb_top;
     .FlushE      (haz_if_inst.FlushE),
     .FlushD      (haz_if_inst.FlushD)
     );
+    main_decoder main_dec_dut (
+    .op(main_dec_if_inst.op),
+    .RegWrite(main_dec_if_inst.RegWrite),
+    .ResultSrc(main_dec_if_inst.ResultSrc),
+    .ALUOp(main_dec_if_inst.ALUOp),
+    .ImmSrc(main_dec_if_inst.ImmSrc),
+    .ALUSrc(main_dec_if_inst.ALUSrc),
+    .MemWrite(main_dec_if_inst.MemWrite),
+    .Jump(main_dec_if_inst.Jump),
+    .Branch(main_dec_if_inst.Branch)
+    );
 
     //--------------------------------------------------
     // UVM Configuration
@@ -105,6 +117,7 @@ module tb_top;
         uvm_config_db #(virtual alu_dec_if)::set(null, "*", "vif", alu_dec_if_inst);
         uvm_config_db #(virtual fwd_if)::set(null, "*", "vif", fwd_if_inst);
         uvm_config_db #(virtual haz_if)::set(null, "*", "vif", haz_if_inst);
+        uvm_config_db #(virtual main_dec_if)::set(null, "*", "vif", main_dec_if_inst);
         //------------------------------------------
         // Run Test
         //------------------------------------------

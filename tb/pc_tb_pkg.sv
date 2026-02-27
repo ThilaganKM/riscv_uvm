@@ -82,5 +82,17 @@ package pc_tb_pkg;
   `include "agent/haz_agent.sv"
   `include "env/haz_env.sv"
   `include "test/haz_test.sv"
+  //--------------------------------------------------
+// MAIN DECODER
+//--------------------------------------------------
+
+  `include "sequence/main_dec_base_sequence.sv"
+  `include "sequencer/main_dec_sequencer.sv"
+  `include "driver/main_dec_driver.sv"
+  `include "monitor/main_dec_monitor.sv"
+  `include "scoreboard/main_dec_scoreboard.sv"
+  `include "agent/main_dec_agent.sv"
+  `include "env/main_dec_env.sv"
+  `include "test/main_dec_test.sv"
 
 endpackage

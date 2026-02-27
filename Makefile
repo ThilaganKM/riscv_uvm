@@ -21,7 +21,8 @@ RTL = \
  rtl/ALU.sv \
  rtl/Alu_decoder.sv \
  rtl/forwarding_unit.sv \
- rtl/HazardUnit.sv
+ rtl/HazardUnit.sv \
+ rtl/main_decoder.sv
 
 #--------------------------------------------------
 # Interface Files
@@ -33,7 +34,8 @@ INTERFACES = \
  tb/interfaces/alu_if.sv \
  tb/interfaces/alu_dec_if.sv \
  tb/interfaces/fwd_if.sv \
- tb/interfaces/haz_if.sv
+ tb/interfaces/haz_if.sv \
+ tb/interfaces/main_dec_if.sv
 
 #--------------------------------------------------
 # Transaction Package
@@ -90,6 +92,8 @@ fwd:
 
 haz:
 	$(SIM) -c tb_top +UVM_TESTNAME=haz_test -do "run -all"
+main_dec:
+	$(SIM) -c tb_top +UVM_TESTNAME=main_dec_test -do "run -all"
 
 #--------------------------------------------------
 # Clean Build
