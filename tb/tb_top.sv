@@ -20,6 +20,7 @@ module tb_top;
     alu_if aluif(clk);     // ✅ ADD ALU INTERFACE
     alu_dec_if alu_dec_if_inst(clk);
     fwd_if fwd_if_inst(clk);
+    haz_if haz_if_inst(clk);
     //--------------------------------------------------
     // DUTs
     //--------------------------------------------------
@@ -74,6 +75,18 @@ module tb_top;
     .ForwardBE(fwd_if_inst.ForwardBE)
     );
 
+    HazardUnit haz_dut (
+    .Rs1D        (haz_if_inst.Rs1D),
+    .Rs2D        (haz_if_inst.Rs2D),
+    .RdE         (haz_if_inst.RdE),
+    .PCSrcE      (haz_if_inst.PCSrcE),
+    .ResultSrcE0 (haz_if_inst.ResultSrcE0),
+    .StallF      (haz_if_inst.StallF),
+    .StallD      (haz_if_inst.StallD),
+    .FlushE      (haz_if_inst.FlushE),
+    .FlushD      (haz_if_inst.FlushD)
+    );
+
     //--------------------------------------------------
     // UVM Configuration
     //--------------------------------------------------
@@ -91,6 +104,7 @@ module tb_top;
         uvm_config_db #(virtual alu_if)::set(null, "*", "vif", aluif); // ✅ ADD
         uvm_config_db #(virtual alu_dec_if)::set(null, "*", "vif", alu_dec_if_inst);
         uvm_config_db #(virtual fwd_if)::set(null, "*", "vif", fwd_if_inst);
+        uvm_config_db #(virtual haz_if)::set(null, "*", "vif", haz_if_inst);
         //------------------------------------------
         // Run Test
         //------------------------------------------

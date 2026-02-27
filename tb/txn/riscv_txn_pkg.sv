@@ -123,4 +123,36 @@ package riscv_txn_pkg;
 
   endclass
 
+  //--------------------------------------------------
+  // Hazard Unit Transaction
+  //--------------------------------------------------
+
+  class haz_seq_item extends uvm_sequence_item;
+
+    // Inputs to DUT
+    rand bit [4:0] Rs1D;
+    rand bit [4:0] Rs2D;
+    rand bit [4:0] RdE;
+    rand bit       PCSrcE;
+    rand bit       ResultSrcE0;
+
+    // Observed Outputs
+    bit StallF;
+    bit StallD;
+    bit FlushE;
+    bit FlushD;
+
+    // Light distribution (encourage non-zero rd)
+    constraint rd_dist_c {
+      RdE dist {0 := 1, [1:31] := 9};
+    }
+
+    `uvm_object_utils(haz_seq_item)
+
+    function new(string name = "haz_seq_item");
+      super.new(name);
+    endfunction
+
+  endclass
+
 endpackage

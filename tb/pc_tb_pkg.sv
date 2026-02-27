@@ -70,4 +70,17 @@ package pc_tb_pkg;
   `include "env/fwd_env.sv"
   `include "test/fwd_test.sv"
 
+    //--------------------------------------------------
+  // HAZARD UNIT
+  //--------------------------------------------------
+
+  `include "sequence/haz_base_sequence.sv"
+  `include "sequencer/haz_sequencer.sv"
+  `include "driver/haz_driver.sv"
+  `include "monitor/haz_monitor.sv"
+  `include "scoreboard/haz_scoreboard.sv"
+  `include "agent/haz_agent.sv"
+  `include "env/haz_env.sv"
+  `include "test/haz_test.sv"
+
 endpackage
