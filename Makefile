@@ -19,7 +19,7 @@ RTL = \
  rtl/PC.sv \
  rtl/register_file.sv \
  rtl/ALU.sv \
- rtl/Alu_decoder.sv \ 
+ rtl/Alu_decoder.sv \
  rtl/forwarding_unit.sv
 
 #--------------------------------------------------
