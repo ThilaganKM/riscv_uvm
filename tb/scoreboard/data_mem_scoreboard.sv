@@ -20,17 +20,15 @@ class data_mem_scoreboard extends uvm_component;
 
     int idx = tx.A[31:2];
 
-    // Write happens at posedge
-    if(tx.we)
-      golden_mem[idx] = tx.WD;
-
-    if(tx.ReadData !== golden_mem[idx])
-      `uvm_error("DMEM_SB",
+    // First compare read with OLD golden value
+    if (tx.ReadData !== golden_mem[idx])
+        `uvm_error("DMEM_SB",
         $sformatf("Mismatch at %0d Expected=%0h Actual=%0h",
-          idx, golden_mem[idx], tx.ReadData))
-    else
-      `uvm_info("DMEM_SB","Memory match",UVM_LOW)
+            idx, golden_mem[idx], tx.ReadData))
 
+    // Then update golden after comparison
+    if (tx.we)
+        golden_mem[idx] = tx.WD;
   endfunction
 
 endclass
