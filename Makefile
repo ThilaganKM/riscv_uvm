@@ -23,7 +23,8 @@ RTL = \
  rtl/forwarding_unit.sv \
  rtl/HazardUnit.sv \
  rtl/main_decoder.sv \
- rtl/control_unit.sv
+ rtl/control_unit.sv \
+ rtl/data_mem.sv
 
 #--------------------------------------------------
 # Interface Files
@@ -37,7 +38,8 @@ INTERFACES = \
  tb/interfaces/fwd_if.sv \
  tb/interfaces/haz_if.sv \
  tb/interfaces/main_dec_if.sv \
- tb/interfaces/control_unit_if.sv
+ tb/interfaces/control_unit_if.sv \
+ tb/interfaces/data_mem_if.sv
 
 #--------------------------------------------------
 # Transaction Package
@@ -99,6 +101,9 @@ main_dec:
 
 ctrl:
 	$(SIM) -c tb_top +UVM_TESTNAME=control_unit_test -do "run -all"
+
+dmem:
+	$(SIM) -c tb_top +UVM_TESTNAME=data_mem_test -do "run -all"
 
 #--------------------------------------------------
 # Clean Build

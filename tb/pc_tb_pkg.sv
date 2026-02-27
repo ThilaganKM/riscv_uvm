@@ -107,5 +107,17 @@ package pc_tb_pkg;
   `include "agent/control_unit_agent.sv"
   `include "env/control_unit_env.sv"
   `include "test/control_unit_test.sv"
+  //--------------------------------------------------
+// DATA MEMORY
+//--------------------------------------------------
+
+  `include "sequence/data_mem_base_sequence.sv"
+  `include "sequencer/data_mem_sequencer.sv"
+  `include "driver/data_mem_driver.sv"
+  `include "monitor/data_mem_monitor.sv"
+  `include "scoreboard/data_mem_scoreboard.sv"
+  `include "agent/data_mem_agent.sv"
+  `include "env/data_mem_env.sv"
+  `include "test/data_mem_test.sv"
 
 endpackage

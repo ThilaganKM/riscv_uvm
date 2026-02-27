@@ -23,6 +23,7 @@ module tb_top;
     haz_if haz_if_inst(clk);
     main_dec_if main_dec_if_inst(clk);
     control_unit_if ctrl_if_inst(clk);
+    data_mem_if dmem_if_inst(clk);
     //--------------------------------------------------
     // DUTs
     //--------------------------------------------------
@@ -115,6 +116,14 @@ module tb_top;
     .ALUControl(ctrl_if_inst.ALUControl)
     );
 
+    data_mem dmem_dut (
+    .clk      (clk),
+    .we       (dmem_if_inst.we),
+    .A        (dmem_if_inst.A),
+    .WD       (dmem_if_inst.WD),
+    .ReadData (dmem_if_inst.ReadData)
+);
+
     //--------------------------------------------------
     // UVM Configuration
     //--------------------------------------------------
@@ -135,6 +144,7 @@ module tb_top;
         uvm_config_db #(virtual haz_if)::set(null, "*", "vif", haz_if_inst);
         uvm_config_db #(virtual main_dec_if)::set(null, "*", "vif", main_dec_if_inst);
         uvm_config_db #(virtual control_unit_if)::set(null, "*", "vif", ctrl_if_inst);
+        uvm_config_db #(virtual data_mem_if)::set(null, "*", "vif", dmem_if_inst);
         //------------------------------------------
         // Run Test
         //------------------------------------------
