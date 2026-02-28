@@ -121,7 +121,6 @@ dmem:
 
 pipeline:
     $(SIM) -c tb_pipeline_top +UVM_TESTNAME=pipeline_test -do "run -all"
-
 #--------------------------------------------------
 # Clean Build
 #--------------------------------------------------
