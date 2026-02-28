@@ -58,7 +58,6 @@ logic [31:0] PCTargetE, PCNext;       // PC target and next PC
 logic [31:0] ResultW;                  // Data to write back
 logic [31:0] RD1D, RD2D;               // Register file outputs
 logic [31:0] RD1E, RD2E, RD2M;        // EX/MEM stage data
-logic [31:0] ALUResultM;               // MEM stage ALU result
 logic [31:0] ImmExtendE, ImmExtendD;   // Extended immediate values
 
 /////////////////////////
