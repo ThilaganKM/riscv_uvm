@@ -25,6 +25,16 @@ RTL = \
  rtl/main_decoder.sv \
  rtl/control_unit.sv \
  rtl/data_mem.sv \
+ rtl/instr_mem.sv \
+ rtl/IF_ID.sv \
+ rtl/ID_IE.sv \
+ rtl/IE_IM.sv \
+ rtl/IM_IW.sv \
+ rtl/mux2.sv \
+ rtl/mux3to1.sv \
+ rtl/Adder.sv \
+ rtl/ExtendUnit.sv \
+ rtl/rvhazard.sv \
  rtl/rvhazard_dbg.sv
 
 #--------------------------------------------------
@@ -63,6 +73,8 @@ TBPKG = \
 TOP = \
  tb/tb_top.sv
 
+PIPE_TOP = \
+ tb/tb_pipeline_top.sv
 #--------------------------------------------------
 # Compile (ORDER IS CRITICAL)
 #--------------------------------------------------
@@ -75,6 +87,7 @@ compile:
 	$(VLOG) -sv +incdir+$(UVM_HOME) $(TBPKG)
 	$(VLOG) -sv +incdir+$(UVM_HOME) $(RTL)
 	$(VLOG) -sv +incdir+$(UVM_HOME) $(TOP)
+	$(VLOG) -sv +incdir+$(UVM_HOME) $(PIPE_TOP)
 
 #--------------------------------------------------
 # Run Tests
@@ -105,6 +118,9 @@ ctrl:
 
 dmem:
 	$(SIM) -c tb_top +UVM_TESTNAME=data_mem_test -do "run -all"
+
+pipeline:
+	$(SIM) -c tb_pipeline_top -do "run -all"
 
 #--------------------------------------------------
 # Clean Build
