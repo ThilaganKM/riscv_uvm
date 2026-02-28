@@ -34,7 +34,7 @@ RTL = \
  rtl/mux3to1.sv \
  rtl/Adder.sv \
  rtl/ExtendUnit.sv \
- rtl/rvhazard.sv \
+ rtl/riscv_hazardcontrol.sv \
  rtl/rvhazard_dbg.sv
 
 #--------------------------------------------------
