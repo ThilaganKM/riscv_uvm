@@ -70,8 +70,8 @@ TBPKG = \
 # Top Module
 #--------------------------------------------------
 
-TOP = \
- tb/tb_top.sv
+#TOP = \
+ #tb/tb_top.sv use this for unit block level verification
 
 PIPE_TOP = \
  tb/tb_pipeline_top.sv
