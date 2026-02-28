@@ -120,7 +120,7 @@ dmem:
 	$(SIM) -c tb_top +UVM_TESTNAME=data_mem_test -do "run -all"
 
 pipeline:
-	$(SIM) -c tb_pipeline_top -do "run -all"
+    $(SIM) -c tb_pipeline_top +UVM_TESTNAME=pipeline_test -do "run -all"
 
 #--------------------------------------------------
 # Clean Build
