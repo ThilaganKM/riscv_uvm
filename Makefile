@@ -24,7 +24,8 @@ RTL = \
  rtl/HazardUnit.sv \
  rtl/main_decoder.sv \
  rtl/control_unit.sv \
- rtl/data_mem.sv
+ rtl/data_mem.sv \
+ rtl/rvhazard_dbg.sv
 
 #--------------------------------------------------
 # Interface Files
