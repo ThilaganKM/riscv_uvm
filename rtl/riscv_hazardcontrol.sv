@@ -123,6 +123,7 @@ IF_ID IF_ID(
 // Register File
 register_file register_file(
     .clk(clk),
+    .reset(reset),
     .A1(InstrD[19:15]),
     .A2(InstrD[24:20]),
     .A3(rdW),
@@ -138,6 +139,7 @@ ExtendUnit Extend(.Instr(InstrD), .ImmSrc(ImmSrcD), .ImmExtend(ImmExtendD));
 // Control Unit
 control_unit control_unit(
     .op(InstrD[6:0]),
+    .Zero(ZeroE),
     .funct3(InstrD[14:12]),
     .funct7b5(InstrD[30]),
     .Branch(BranchD),
