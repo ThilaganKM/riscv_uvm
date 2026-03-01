@@ -24,7 +24,7 @@ module register_file (
 
         if (reset) begin
             for (int i = 0; i < 32; i++)
-                rf[i] <= 32'd4;     // Reset initialization ✅
+                rf[i] <= 32'd0;     // Reset initialization ✅
 
         end else if (we && A3 != 0) begin
             rf[A3] <= wd3;
