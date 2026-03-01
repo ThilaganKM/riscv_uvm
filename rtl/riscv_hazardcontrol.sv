@@ -220,18 +220,20 @@ ALU ALU(
 IE_IM IE_IM(
     .clk(clk),
     .reset(reset),
+
     .ALUResultE(ALUResultE),
     .RD2E(RD2E),
-    .RegWriteM(RegWriteM),
-    .MemWriteM(MemWriteM),
-    .ResultSrcM(ResultSrcM),
     .RegWriteE(RegWriteE),
     .MemWriteE(MemWriteE),
     .ResultSrcE(ResultSrcE),
     .rdE(rdE),
     .PCPlus4E(PCPlus4E),
+
     .ALUResultM(ALUResultM),
     .RD2M(RD2M),
+    .RegWriteM(RegWriteM),
+    .MemWriteM(MemWriteM),
+    .ResultSrcM(ResultSrcM),
     .rdM(rdM),
     .PCPlus4M(PCPlus4M)
 );
