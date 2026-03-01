@@ -97,6 +97,8 @@ compile:
 compile_pipeline:
 	vlib work
 
+	$(VLOG) -sv +incdir+$(UVM_HOME) $(INTERFACES)
+	$(VLOG) -sv +incdir+$(UVM_HOME) $(TXN)
 	$(VLOG) -sv +incdir+$(UVM_HOME) $(PIPE_PKG)
 	$(VLOG) -sv +incdir+$(UVM_HOME) $(RTL)
 	$(VLOG) -sv +incdir+$(UVM_HOME) $(PIPE_TOP)
