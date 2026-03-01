@@ -18,4 +18,6 @@ module rvhazard_dbg(
     assign commit_data  = core.ResultW;
     assign commit_pc    = core.PCPlus4W - 32'd4;
 
+    
+
 endmodule
