@@ -32,9 +32,16 @@ module instr_mem(
     // Instruction memory array (64 words of 32 bits)
     logic [31:0] mem [63:0];
 
+    initial begin
+        $display("Current working dir unknown but loading inst.mem");
+    end
+
     // Initialize memory from external file "inst.mem"
     initial begin
+        $display("=== LOADING INSTRUCTION MEMORY ===");
         $readmemh("inst.mem", mem);
+        for (int i=0; i<8; i++)
+            $display("mem[%0d] = %h", i, mem[i]);
     end
 
     // Word-aligned read (divide address by 4)
