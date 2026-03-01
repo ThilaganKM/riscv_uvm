@@ -86,7 +86,7 @@ compile:
 	$(VLOG) -sv +incdir+$(UVM_HOME) $(TXN)
 	$(VLOG) -sv +incdir+$(UVM_HOME) $(TBPKG)
 	$(VLOG) -sv +incdir+$(UVM_HOME) $(RTL)
-	$(VLOG) -sv +incdir+$(UVM_HOME) $(TOP)
+#$(VLOG) -sv +incdir+$(UVM_HOME) $(TOP)
 	$(VLOG) -sv +incdir+$(UVM_HOME) $(PIPE_TOP)
 
 #--------------------------------------------------
