@@ -72,5 +72,9 @@ always_comb begin
     end
 
 end
-
+// 🔥 Debug block (combinational safe)
+always @(*) begin
+    $display("FWD DEBUG: Rs1E=%0d Rs2E=%0d RdM=%0d RdW=%0d RegWriteM=%0b RegWriteW=%0b | ForwardAE=%0b ForwardBE=%0b",
+             Rs1E, Rs2E, RdM, RdW, RegWriteM, RegWriteW, ForwardAE, ForwardBE);
+end
 endmodule
