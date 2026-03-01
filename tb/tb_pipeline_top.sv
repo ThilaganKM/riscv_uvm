@@ -46,6 +46,14 @@ module tb_pipeline_top;
     reset = 0;
   end
 
+  always @(posedge clk) begin
+    $display("CLK | PC=%h | RegWriteW=%b | rdW=%0d | ResultW=%h",
+            dut.core.PCF,
+            dut.core.RegWriteW,
+            dut.core.rdW,
+            dut.core.ResultW);
+  end
+
   //----------------------------------------
   // Pass commit interface via config_db
   //----------------------------------------
