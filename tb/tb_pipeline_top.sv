@@ -8,7 +8,8 @@ module tb_pipeline_top;
   //----------------------------------------
   // Clock
   //----------------------------------------
-  logic clk;
+  logic clk = 0;
+
   always #5 clk = ~clk;
 
   //----------------------------------------
@@ -40,14 +41,17 @@ module tb_pipeline_top;
   // Reset Sequence
   //----------------------------------------
   initial begin
-    clk = 0;
     reset = 1;
     repeat(5) @(posedge clk);
     reset = 0;
   end
 
+  //----------------------------------------
+  // DEBUG: show core activity
+  //----------------------------------------
   always @(posedge clk) begin
-    $display("CLK | PC=%h | RegWriteW=%b | rdW=%0d | ResultW=%h",
+    $display("T=%0t | PC=%h | RegWriteW=%b | rdW=%0d | ResultW=%h",
+            $time,
             dut.core.PCF,
             dut.core.RegWriteW,
             dut.core.rdW,
@@ -55,7 +59,7 @@ module tb_pipeline_top;
   end
 
   //----------------------------------------
-  // Pass commit interface via config_db
+  // UVM Setup
   //----------------------------------------
   initial begin
     uvm_config_db#(logic)::set(null, "*", "clk", clk);

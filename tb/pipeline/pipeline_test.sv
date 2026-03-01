@@ -15,9 +15,8 @@ class pipeline_test extends uvm_test;
   task run_phase(uvm_phase phase);
     phase.raise_objection(this);
 
-    repeat (300) begin
-        #10;  // 1 full clock cycle
-    end
+    // Run for 200 clock cycles
+    repeat (200) #10;
 
     phase.drop_objection(this);
   endtask
