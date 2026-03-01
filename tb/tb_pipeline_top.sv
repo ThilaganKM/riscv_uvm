@@ -50,6 +50,7 @@ module tb_pipeline_top;
   // Pass commit interface via config_db
   //----------------------------------------
   initial begin
+    uvm_config_db#(logic)::set(null, "*", "clk", clk);
     uvm_config_db#(logic)::set(null, "*", "commit_valid", commit_valid);
     uvm_config_db#(logic[31:0])::set(null, "*", "commit_pc", commit_pc);
     uvm_config_db#(logic[4:0])::set(null, "*", "commit_rd", commit_rd);
