@@ -34,16 +34,21 @@ module ALU(
     // Combinational ALU logic
     always_comb begin
         case (ALUControl)
-            3'b000: ALUResult = SrcA + SrcB;   // ADD
-            3'b001: ALUResult = SrcA - SrcB;   // SUB
-            3'b101: ALUResult = SrcA >> SrcB[4:0];  // Shift Right
-            3'b011: ALUResult = SrcA | SrcB;   // OR
-            3'b010: ALUResult = SrcA & SrcB;   // AND
-            default: ALUResult = 32'b0;        // Default to 0
+
+            3'b000: ALUResult = SrcA + SrcB; // ADD
+            3'b001: ALUResult = SrcA - SrcB; // SUB
+            3'b010: ALUResult = SrcA & SrcB; // AND
+            3'b011: ALUResult = SrcA | SrcB; // OR
+
+            3'b100: ALUResult =
+            ($signed(SrcA) < $signed(SrcB)) ? 32'd1 : 32'd0; // SLT
+
+            default: ALUResult = 32'd0;
+
         endcase
 
-        // Set Zero flag
-        Zero = (ALUResult == 0) ? 1'b1 : 1'b0;
+        Zero = (ALUResult == 0);
+
     end
 
 endmodule
