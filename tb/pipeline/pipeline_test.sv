@@ -11,4 +11,14 @@ class pipeline_test extends uvm_test;
     super.build_phase(phase);
     env = pipeline_env::type_id::create("env",this);
   endfunction
+
+  task run_phase(uvm_phase phase);
+    phase.raise_objection(this);
+
+    // Let simulation run for enough cycles
+    #1000;
+
+    phase.drop_objection(this);
+  endtask
+
 endclass
