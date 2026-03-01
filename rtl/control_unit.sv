@@ -44,11 +44,10 @@ module control_unit(
 
     // Instantiate ALU decoder to generate ALUControl signals
     Alu_decoder ad(
-        .opb5(op[5]),
-        .funct3(funct3),
-        .funct7b5(funct7b5),
-        .ALUOp(ALUOp),
-        .ALUControl(ALUControl)
+    .funct3(funct3),
+    .funct7b5(funct7b5),
+    .ALUOp(ALUOp),
+    .ALUControl(ALUControl)
     );
 
     // Instantiate main decoder to generate primary control signals
