@@ -73,19 +73,22 @@ always_ff @(posedge clk) begin
         ALUControlE <= 3'b0;
     end
     else if (flush) begin
-        rd1E <= 32'b0;
-        rd2E <= 32'b0;
-        PCE <= 32'b0;
-        rs1E <= 5'b0;
-        rs2E <= 5'b0;
-        rdE <= 5'b0;
-        ImmExtendE <= 32'b0;
-        PCPlus4E <= 32'b0;
-
+        // On flush (e.g., branch misprediction), clear control signals
+        // but pass data signals (rd1, rd2, PCD, etc.) for debugging or tracking
+        rd1E <= rd1D;
+        rd2E <= rd2D; 
+        PCE <= PCD; 
+        rs1E <= rs1D;
+        rs2E <= rs2D;
+        rdE <= rdD; 
+        ImmExtendE <= ImmExtendD;
+        PCPlus4E <= PCPlus4D;
+        
+        // Flush control signals to prevent instruction execution
         RegWriteE <= 1'b0;
         ResultSrcE <= 2'b0;
         MemWriteE <= 1'b0;
-        JumpE <= 1'b0;
+        JumpE <= 1'b0; 
         BranchE <= 1'b0;
         ALUSrcE <= 1'b0;
         ALUControlE <= 3'b0;
