@@ -18,12 +18,13 @@ module rvhazard_dbg(
     assign commit_data  = core.ResultW;
     assign commit_pc    = core.PCPlus4W - 32'd4;
     always @(posedge clk) begin
-        if (rdW == 4 && RegWriteW) begin
-            $display("SUB DEBUG: PC=%h SrcA=%0d SrcB=%0d Result=%0d",
-                    PCPlus4W-4,
-                    SrcAE,
-                    SrcBE,
-                    ResultW);
+        if (core.RegWriteW && core.rdW == 4) begin
+            $display("SUB DEBUG: PC=%h SrcA=%0d SrcB=%0d ALUControl=%0d Result=%0d",
+                    commit_pc,
+                    core.SrcAE,
+                    core.SrcBE,
+                    core.ALUControlE,
+                    core.ResultW);
         end
     end
 
