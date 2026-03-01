@@ -120,12 +120,6 @@ package pc_tb_pkg;
   `include "env/data_mem_env.sv"
   `include "test/data_mem_test.sv"
 
-  //--------------------------------------------------
-// PIPELINE INTEGRATION
-//--------------------------------------------------
 
-  `include "pipeline/pipeline_scoreboard.sv"
-  `include "pipeline/pipeline_env.sv"
-  `include "pipeline/pipeline_test.sv"
 
 endpackage
