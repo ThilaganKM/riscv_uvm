@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 import uvm_pkg::*;
-import pc_tb_pkg::*; 
+import pipeline_pkg::*;
 `include "uvm_macros.svh"
 
 module tb_pipeline_top;
