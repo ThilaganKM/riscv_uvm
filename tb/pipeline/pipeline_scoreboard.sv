@@ -59,7 +59,9 @@ class pipeline_scoreboard extends uvm_component;
     logic [4:0]  rs1, rs2, rd;
     logic [31:0] imm;
     logic [31:0] expected;
-
+    @(posedge clk);
+    $display("CLK tick: commit_valid=%0b pc=%h rd=%0d data=%h",
+            commit_valid, commit_pc, commit_rd, commit_data);
     forever begin
       @(posedge clk);
 
