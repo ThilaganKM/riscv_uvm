@@ -13,22 +13,9 @@ module rvhazard_dbg(
         .reset(reset)
     );
 
-    always_ff @(posedge clk or posedge reset) begin
-        if (reset) begin
-            commit_valid <= 0;
-            commit_pc    <= 0;
-            commit_rd    <= 0;
-            commit_data  <= 0;
-        end
-        else begin
-            commit_valid <= core.RegWriteW;
-
-            if (core.RegWriteW) begin
-                commit_rd   <= core.rdW;
-                commit_data <= core.ResultW;
-                commit_pc   <= core.PCPlus4W - 32'd4;
-            end
-        end
-    end
+    assign commit_valid = core.RegWriteW;
+    assign commit_rd    = core.rdW;
+    assign commit_data  = core.ResultW;
+    assign commit_pc    = core.PCPlus4W - 32'd4;
 
 endmodule
