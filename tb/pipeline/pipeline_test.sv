@@ -1,4 +1,5 @@
 class pipeline_test extends uvm_test;
+
   `uvm_component_utils(pipeline_test)
 
   pipeline_env env;
@@ -13,12 +14,13 @@ class pipeline_test extends uvm_test;
   endfunction
 
   task run_phase(uvm_phase phase);
+
     phase.raise_objection(this);
 
-    // Run for 200 clock cycles
-    repeat (200) #10;
+    repeat(200) @(posedge env.sb.vif.clk);
 
     phase.drop_objection(this);
+
   endtask
 
 endclass

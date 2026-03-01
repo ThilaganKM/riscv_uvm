@@ -50,7 +50,8 @@ INTERFACES = \
  tb/interfaces/haz_if.sv \
  tb/interfaces/main_dec_if.sv \
  tb/interfaces/control_unit_if.sv \
- tb/interfaces/data_mem_if.sv
+ tb/interfaces/data_mem_if.sv \
+ tb/pipeline/interfaces/pipeline_if.sv 
 
 #--------------------------------------------------
 # Transaction Package

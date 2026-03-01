@@ -9,7 +9,6 @@ module tb_pipeline_top;
   // Clock
   //----------------------------------------
   logic clk = 0;
-
   always #5 clk = ~clk;
 
   //----------------------------------------
@@ -18,12 +17,9 @@ module tb_pipeline_top;
   logic reset;
 
   //----------------------------------------
-  // Commit Interface Wires
+  // Interface
   //----------------------------------------
-  logic        commit_valid;
-  logic [31:0] commit_pc;
-  logic [4:0]  commit_rd;
-  logic [31:0] commit_data;
+  pipeline_if pipe_if(clk);
 
   //----------------------------------------
   // DUT
@@ -31,14 +27,14 @@ module tb_pipeline_top;
   rvhazard_dbg dut (
     .clk(clk),
     .reset(reset),
-    .commit_valid(commit_valid),
-    .commit_pc(commit_pc),
-    .commit_rd(commit_rd),
-    .commit_data(commit_data)
+    .commit_valid(pipe_if.commit_valid),
+    .commit_pc(pipe_if.commit_pc),
+    .commit_rd(pipe_if.commit_rd),
+    .commit_data(pipe_if.commit_data)
   );
 
   //----------------------------------------
-  // Reset Sequence
+  // Reset
   //----------------------------------------
   initial begin
     reset = 1;
@@ -47,27 +43,22 @@ module tb_pipeline_top;
   end
 
   //----------------------------------------
-  // DEBUG: show core activity
+  // Debug
   //----------------------------------------
   always @(posedge clk) begin
-    $display("T=%0t | PC=%h | RegWriteW=%b | rdW=%0d | ResultW=%h",
-            $time,
-            dut.core.PCF,
-            dut.core.RegWriteW,
-            dut.core.rdW,
-            dut.core.ResultW);
+    $display("T=%0t | PC=%h | commit_valid=%b | rd=%0d | data=%h",
+              $time,
+              pipe_if.commit_pc,
+              pipe_if.commit_valid,
+              pipe_if.commit_rd,
+              pipe_if.commit_data);
   end
 
   //----------------------------------------
   // UVM Setup
   //----------------------------------------
   initial begin
-    uvm_config_db#(logic)::set(null, "*", "clk", clk);
-    uvm_config_db#(logic)::set(null, "*", "commit_valid", commit_valid);
-    uvm_config_db#(logic[31:0])::set(null, "*", "commit_pc", commit_pc);
-    uvm_config_db#(logic[4:0])::set(null, "*", "commit_rd", commit_rd);
-    uvm_config_db#(logic[31:0])::set(null, "*", "commit_data", commit_data);
-
+    uvm_config_db#(virtual pipeline_if)::set(null,"*","vif",pipe_if);
     run_test("pipeline_test");
   end
 
