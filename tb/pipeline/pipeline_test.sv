@@ -15,8 +15,7 @@ class pipeline_test extends uvm_test;
   task run_phase(uvm_phase phase);
     phase.raise_objection(this);
 
-    // Let simulation run for enough cycles
-    #1000;
+    repeat (200) @(posedge tb_pipeline_top.clk);
 
     phase.drop_objection(this);
   endtask
