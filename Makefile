@@ -79,7 +79,8 @@ TBPKG = \
  tb/pc_tb_pkg.sv
 
 PIPE_PKG = \
- tb/pipeline/pipeline_pkg.sv
+ tb/pipeline/pipeline_pkg.sv \
+ tb/pipeline/riscv_rand_instr.sv
 
 #--------------------------------------------------
 # Top Module
