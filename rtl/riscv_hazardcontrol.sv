@@ -1,90 +1,76 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 
-// Design Name: 
-// Module Name: rvhazard
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-//   Top-level pipelined RISC-V processor with hazard detection, forwarding, and 
-//   data memory interface. Implements a 5-stage pipeline (IF, ID, EX, MEM, WB).
-//   This module instantiates all pipeline registers, ALU, memories, and hazard/forwarding units.
-//
-// Revision:
-// Revision 0.01 - File Created
-//////////////////////////////////////////////////////////////////////////////////
 
 module rvhazard(
-    input logic clk,        // Clock
-    input logic reset       // Reset
+    input logic clk,
+    input logic reset
 );
 
 /////////////////////////
-// Pipeline Control Signals
+// Pipeline Control
 /////////////////////////
-logic ZeroE;             // ALU zero flag (used for branch decisions)
-logic StallF, StallD;    // Pipeline stall signals for IF and ID stages
-logic FlushE, FlushD;    // Pipeline flush signals for EX and ID stages
-logic PCSrcE;            // PC source signal (branch/jump decision)
+logic ZeroE;
+logic StallF, StallD;
+logic FlushE, FlushD;
+logic PCSrcE;
 
 /////////////////////////
-// Forwarding Unit Signals
+// Forwarding
 /////////////////////////
-logic [1:0] ForwardAE, ForwardBE; // Forwarding mux control for ALU inputs
+logic [1:0] ForwardAE, ForwardBE;
 
 /////////////////////////
 // Control Signals
 /////////////////////////
-logic RegWriteM, RegWriteE, RegWriteW; // Register write signals
-logic MemWriteM, MemWriteE;            // Memory write signals
-logic JumpD, BranchD, JumpE, BranchE;  // Jump and branch signals
-logic ALUSrcE, ALUSrcD;                // ALU source mux control
-logic [1:0] ResultSrcD, ResultSrcE, ResultSrcM, ResultSrcW; // Result select signals
-logic [2:0] ALUControlD, ALUControlE; // ALU control signals
-logic [1:0] ImmSrcD;                   // Immediate source
+logic RegWriteD, RegWriteE, RegWriteM, RegWriteW;
+logic MemWriteD, MemWriteE, MemWriteM;
+logic JumpD, BranchD, JumpE, BranchE;
+logic ALUSrcD, ALUSrcE;
+logic [1:0] ResultSrcD, ResultSrcE, ResultSrcM, ResultSrcW;
+logic [1:0] ALUOpD, ALUOpE;
+logic [1:0] ImmSrcD;
 
 /////////////////////////
-// Data Signals
+// Data
 /////////////////////////
-logic [31:0] SrcAE, SrcBE, SrcB;       // ALU input sources
+logic [31:0] SrcAE, SrcBE, SrcB;
 logic [31:0] ALUResultE, ALUResultM, ALUResultW;
-logic [31:0] ReadDataM, ReadDataW;    // Memory read data
-logic [31:0] WriteDataE;               // Data to write to memory
-logic [31:0] PCTargetE, PCNext;       // PC target and next PC
-logic [31:0] ResultW;                  // Data to write back
-logic [31:0] RD1D, RD2D;               // Register file outputs
-logic [31:0] RD1E, RD2E, RD2M;        // EX/MEM stage data
-logic [31:0] ImmExtendE, ImmExtendD;   // Extended immediate values
+logic [31:0] ReadDataM, ReadDataW;
+logic [31:0] PCTargetE, PCNext;
+logic [31:0] ResultW;
+logic [31:0] RD1D, RD2D, RD1E, RD2E, RD2M;
+logic [31:0] ImmExtendD, ImmExtendE;
 
 /////////////////////////
-// PC and Instruction Signals
+// PC & Instruction
 /////////////////////////
-logic [31:0] InstrD, InstrF;
-logic [31:0] PCD, PCE, PCF;
-logic [31:0] PCPlus4D, PCPlus4E, PCPlus4M, PCPlus4W, PCPlus4F;
+logic [31:0] InstrF, InstrD;
+logic [31:0] PCF, PCD, PCE;
+logic [31:0] PCPlus4F, PCPlus4D, PCPlus4E, PCPlus4M, PCPlus4W;
 
 /////////////////////////
 // Register Addresses
 /////////////////////////
-logic [4:0] rs1E, rs2E, Rs1D, Rs2D, rdE, rdM, rdW;
+logic [4:0] rs1E, rs2E, rdE, rdM, rdW;
 
 /////////////////////////
-// PC Source Logic
+// funct pipeline
 /////////////////////////
+logic [2:0] funct3E;
+logic funct7b5E;
+
+/////////////////////////
+// ALU Control (EX stage)
+/////////////////////////
+logic [2:0] ALUControlE;
+
 assign PCSrcE = (BranchE & ZeroE) | JumpE;
 
-/////////////////////////
-// Module Instantiations
-/////////////////////////
-
+//////////////////////////////////////////////////////////
 // Forwarding Unit
-forwarding_unit forwarding_unit(
-    .Rs2E(rs2E),
+//////////////////////////////////////////////////////////
+forwarding_unit fwd(
     .Rs1E(rs1E),
+    .Rs2E(rs2E),
     .RdM(rdM),
     .RdW(rdW),
     .RegWriteM(RegWriteM),
@@ -93,25 +79,32 @@ forwarding_unit forwarding_unit(
     .ForwardBE(ForwardBE)
 );
 
-// Adders for PC calculations
-Adder PC_Plus_4(.A(PCF), .B(32'd4), .Sum(PCPlus4F));
-Adder PC_Target(.A(PCE), .B(ImmExtendE), .Sum(PCTargetE));
+//////////////////////////////////////////////////////////
+// PC Logic
+//////////////////////////////////////////////////////////
+Adder PCPlus4Adder(.A(PCF), .B(32'd4), .Sum(PCPlus4F));
+Adder PCTargetAdder(.A(PCE), .B(ImmExtendE), .Sum(PCTargetE));
 
-// PC Mux
-mux2 PC_Next(.d0(PCPlus4F), .d1(PCTargetE), .s(PCSrcE), .y(PCNext));
+mux2 PCMux(.d0(PCPlus4F), .d1(PCTargetE), .s(PCSrcE), .y(PCNext));
 
-// Program Counter
-program_counter ProgramCounter(.clk(clk), .reset(reset), .en(~StallF), .PCNext(PCNext), .PC(PCF));
-
-// Instruction Memory
-instr_mem instruction_memory(.A(PCF), .RD(InstrF));
-
-// IF/ID Pipeline Register
-IF_ID IF_ID(
+program_counter pc(
     .clk(clk),
     .reset(reset),
-    .flush(FlushD),
+    .en(~StallF),
+    .PCNext(PCNext),
+    .PC(PCF)
+);
+
+instr_mem imem(.A(PCF), .RD(InstrF));
+
+//////////////////////////////////////////////////////////
+// IF/ID
+//////////////////////////////////////////////////////////
+IF_ID ifid(
+    .clk(clk),
+    .reset(reset),
     .en(~StallD),
+    .flush(FlushD),
     .InstrF(InstrF),
     .PCF(PCF),
     .PCPlus4F(PCPlus4F),
@@ -120,8 +113,10 @@ IF_ID IF_ID(
     .PCPlus4D(PCPlus4D)
 );
 
+//////////////////////////////////////////////////////////
 // Register File
-register_file register_file(
+//////////////////////////////////////////////////////////
+register_file rf(
     .clk(clk),
     .reset(reset),
     .A1(InstrD[19:15]),
@@ -133,15 +128,20 @@ register_file register_file(
     .rd2(RD2D)
 );
 
-// Immediate Extend Unit
-ExtendUnit Extend(.Instr(InstrD), .ImmSrc(ImmSrcD), .ImmExtend(ImmExtendD));
+//////////////////////////////////////////////////////////
+// Immediate Extend
+//////////////////////////////////////////////////////////
+ExtendUnit extend(
+    .Instr(InstrD),
+    .ImmSrc(ImmSrcD),
+    .ImmExtend(ImmExtendD)
+);
 
-// Control Unit
-control_unit control_unit(
+//////////////////////////////////////////////////////////
+// Control Unit (NO ALUControl HERE)
+//////////////////////////////////////////////////////////
+control_unit ctrl(
     .op(InstrD[6:0]),
-    .Zero(ZeroE),
-    .funct3(InstrD[14:12]),
-    .funct7b5(InstrD[30]),
     .Branch(BranchD),
     .Jump(JumpD),
     .ResultSrc(ResultSrcD),
@@ -149,11 +149,13 @@ control_unit control_unit(
     .ImmSrc(ImmSrcD),
     .RegWrite(RegWriteD),
     .ALUSrc(ALUSrcD),
-    .ALUControl(ALUControlD)
+    .ALUOp(ALUOpD)
 );
 
+//////////////////////////////////////////////////////////
 // Hazard Unit
-HazardUnit hazard_unit(
+//////////////////////////////////////////////////////////
+HazardUnit hz(
     .Rs1D(InstrD[19:15]),
     .Rs2D(InstrD[24:20]),
     .RdE(rdE),
@@ -165,11 +167,14 @@ HazardUnit hazard_unit(
     .FlushD(FlushD)
 );
 
-// ID/EX Pipeline Register
-ID_IE ID_IE(
+//////////////////////////////////////////////////////////
+// ID/EX
+//////////////////////////////////////////////////////////
+ID_IE idex(
     .clk(clk),
     .reset(reset),
     .flush(FlushE),
+
     .rd1D(RD1D),
     .rd2D(RD2D),
     .PCD(PCD),
@@ -178,13 +183,18 @@ ID_IE ID_IE(
     .rdD(InstrD[11:7]),
     .ImmExtendD(ImmExtendD),
     .PCPlus4D(PCPlus4D),
+
     .RegWriteD(RegWriteD),
     .ResultSrcD(ResultSrcD),
     .MemWriteD(MemWriteD),
     .JumpD(JumpD),
     .BranchD(BranchD),
     .ALUSrcD(ALUSrcD),
-    .ALUControlD(ALUControlD),
+
+    .ALUOpD(ALUOpD),
+    .funct3D(InstrD[14:12]),
+    .funct7b5D(InstrD[30]),
+
     .rd1E(RD1E),
     .rd2E(RD2E),
     .PCE(PCE),
@@ -193,22 +203,40 @@ ID_IE ID_IE(
     .rdE(rdE),
     .ImmExtendE(ImmExtendE),
     .PCPlus4E(PCPlus4E),
+
     .RegWriteE(RegWriteE),
     .ResultSrcE(ResultSrcE),
     .MemWriteE(MemWriteE),
     .JumpE(JumpE),
     .BranchE(BranchE),
     .ALUSrcE(ALUSrcE),
-    .ALUControlE(ALUControlE)
+
+    .ALUOpE(ALUOpE),
+    .funct3E(funct3E),
+    .funct7b5E(funct7b5E)
 );
 
-// ALU operand selection with forwarding
-mux2 Src_B(.d0(SrcB), .d1(ImmExtendE), .s(ALUSrcE), .y(SrcBE));
-mux3to1 mux(.d0(RD1E), .d1(ResultW), .d2(ALUResultM), .s(ForwardAE), .y(SrcAE));
-mux3to1 mux2(.d0(RD2E), .d1(ResultW), .d2(ALUResultM), .s(ForwardBE), .y(SrcB));
+//////////////////////////////////////////////////////////
+// ALU Decoder (EX stage)
+//////////////////////////////////////////////////////////
+Alu_decoder alu_dec(
+    .funct3(funct3E),
+    .funct7b5(funct7b5E),
+    .ALUOp(ALUOpE),
+    .ALUControl(ALUControlE)
+);
 
+//////////////////////////////////////////////////////////
+// Forwarding MUXes
+//////////////////////////////////////////////////////////
+mux3to1 muxA(.d0(RD1E), .d1(ResultW), .d2(ALUResultM), .s(ForwardAE), .y(SrcAE));
+mux3to1 muxB(.d0(RD2E), .d1(ResultW), .d2(ALUResultM), .s(ForwardBE), .y(SrcB));
+mux2 muxImm(.d0(SrcB), .d1(ImmExtendE), .s(ALUSrcE), .y(SrcBE));
+
+//////////////////////////////////////////////////////////
 // ALU
-ALU ALU(
+//////////////////////////////////////////////////////////
+ALU alu(
     .SrcA(SrcAE),
     .SrcB(SrcBE),
     .ALUControl(ALUControlE),
@@ -216,11 +244,12 @@ ALU ALU(
     .Zero(ZeroE)
 );
 
-// EX/MEM Pipeline Register
-IE_IM IE_IM(
+//////////////////////////////////////////////////////////
+// EX/MEM
+//////////////////////////////////////////////////////////
+IE_IM exmem(
     .clk(clk),
     .reset(reset),
-
     .ALUResultE(ALUResultE),
     .RD2E(RD2E),
     .RegWriteE(RegWriteE),
@@ -238,8 +267,10 @@ IE_IM IE_IM(
     .PCPlus4M(PCPlus4M)
 );
 
+//////////////////////////////////////////////////////////
 // Data Memory
-data_mem data_memory(
+//////////////////////////////////////////////////////////
+data_mem dmem(
     .clk(clk),
     .we(MemWriteM),
     .A(ALUResultM),
@@ -247,8 +278,10 @@ data_mem data_memory(
     .ReadData(ReadDataM)
 );
 
-// MEM/WB Pipeline Register
-IM_IW IM_IW(
+//////////////////////////////////////////////////////////
+// MEM/WB
+//////////////////////////////////////////////////////////
+IM_IW memwb(
     .clk(clk),
     .reset(reset),
     .ALUResultM(ALUResultM),
@@ -257,6 +290,7 @@ IM_IW IM_IW(
     .RegWriteM(RegWriteM),
     .ResultSrcM(ResultSrcM),
     .rdM(rdM),
+
     .ALUResultW(ALUResultW),
     .ReadDataW(ReadDataW),
     .PCPlus4W(PCPlus4W),
@@ -265,8 +299,10 @@ IM_IW IM_IW(
     .ResultSrcW(ResultSrcW)
 );
 
-// Result Selection for Write-back
-mux3to1 result(
+//////////////////////////////////////////////////////////
+// Writeback MUX
+//////////////////////////////////////////////////////////
+mux3to1 wb_mux(
     .d0(ALUResultW),
     .d1(ReadDataW),
     .d2(PCPlus4W),

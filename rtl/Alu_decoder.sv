@@ -11,7 +11,7 @@ always_comb begin
         2'b01: ALUControl = 3'b001; // SUB (branch compare)
         2'b10: begin
             case (funct3)
-                3'b000: ALUControl = (funct7b5) ? 3'b001 : 3'b000; // SUB / ADD
+                3'b000: ALUControl = funct7b5 ? 3'b001 : 3'b000; // SUB / ADD
                 3'b010: ALUControl = 3'b100; // SLT
                 3'b110: ALUControl = 3'b011; // OR
                 3'b111: ALUControl = 3'b010; // AND
