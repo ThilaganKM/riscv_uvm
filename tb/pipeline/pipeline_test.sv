@@ -24,7 +24,7 @@ class pipeline_test extends uvm_test;
     // --------------------------------
     // Random Instruction Generation
     // --------------------------------
-    for(int i=0;i<64;i++) begin
+    for(int i=0;i<200;i++) begin
 
       rand_instr = new();
 
@@ -43,7 +43,7 @@ class pipeline_test extends uvm_test;
     // --------------------------------
     // Run Pipeline
     // --------------------------------
-    repeat(500) @(posedge env.sb.vif.clk);
+    repeat(1500) @(posedge env.sb.vif.clk);
 
     phase.drop_objection(this);
 

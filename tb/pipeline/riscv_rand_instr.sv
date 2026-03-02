@@ -1,8 +1,5 @@
 class riscv_rand_instr;
 
-  // -----------------------------
-  // Fields
-  // -----------------------------
   rand bit [6:0]  opcode;
   rand bit [4:0]  rd;
   rand bit [4:0]  rs1;
@@ -13,68 +10,70 @@ class riscv_rand_instr;
 
   bit [31:0] instr;
 
-  // -----------------------------
-  // Only R-type and I-type ALU
-  // -----------------------------
+  // --------------------------------
+  // Opcode Selection (Add LOAD)
+  // --------------------------------
   constraint opcode_c {
-    opcode inside {7'b0110011, 7'b0010011};
+    opcode dist {
+      7'b0110011 := 40,  // R-type
+      7'b0010011 := 40,  // I-type
+      7'b0000011 := 20   // LOAD
+    };
   }
 
   constraint reg_c {
-    rd  inside {[1:31]};   // avoid x0 write
+    rd  inside {[1:31]};
     rs1 inside {[0:31]};
     rs2 inside {[0:31]};
   }
 
-  // -----------------------------
-  // R-TYPE (ONLY WHAT ALU SUPPORTS)
-  // -----------------------------
+  // --------------------------------
+  // R-Type (only supported ops)
+  // --------------------------------
   constraint rtype_c {
     if (opcode == 7'b0110011) {
-
-      // ADD
-      (funct3 == 3'b000 && funct7 == 7'b0000000) ||
-
-      // SUB
-      (funct3 == 3'b000 && funct7 == 7'b0100000) ||
-
-      // AND
-      (funct3 == 3'b111 && funct7 == 7'b0000000) ||
-
-      // OR
-      (funct3 == 3'b110 && funct7 == 7'b0000000) ||
-
-      // SLT
-      (funct3 == 3'b010 && funct7 == 7'b0000000);
+      (funct3 == 3'b000 && funct7 == 7'b0000000) || // ADD
+      (funct3 == 3'b000 && funct7 == 7'b0100000) || // SUB
+      (funct3 == 3'b111 && funct7 == 7'b0000000) || // AND
+      (funct3 == 3'b110 && funct7 == 7'b0000000) || // OR
+      (funct3 == 3'b010 && funct7 == 7'b0000000);   // SLT
     }
   }
 
-  // -----------------------------
-  // I-TYPE (ONLY WHAT ALU SUPPORTS)
-  // -----------------------------
+  // --------------------------------
+  // I-Type ALU
+  // --------------------------------
   constraint itype_c {
     if (opcode == 7'b0010011) {
-
-      funct3 inside {
-        3'b000, // ADDI
-        3'b111, // ANDI
-        3'b110, // ORI
-        3'b010  // SLTI
-      };
+      funct3 inside {3'b000,3'b111,3'b110,3'b010}; // ADDI ANDI ORI SLTI
     }
   }
 
-  // -----------------------------
-  // Instruction Packing
-  // -----------------------------
+  // --------------------------------
+  // LOAD (LW only)
+  // --------------------------------
+  constraint load_c {
+    if (opcode == 7'b0000011) {
+      funct3 == 3'b010; // LW
+    }
+  }
+
+  // --------------------------------
+  // Dependency Bias (Load-Use Stress)
+  // --------------------------------
+  constraint dependency_bias {
+    if (opcode == 7'b0000011) {
+      imm_i inside {[0:32]}; // small offsets
+    }
+  }
+
   function void post_randomize();
 
-    if (opcode == 7'b0110011) begin
+    if (opcode == 7'b0110011)
       instr = {funct7, rs2, rs1, funct3, rd, opcode};
-    end
-    else begin
+
+    else
       instr = {imm_i, rs1, funct3, rd, opcode};
-    end
 
   endfunction
 
