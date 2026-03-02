@@ -1,0 +1,18 @@
+# Simulation generated files
+work/
+transcript
+sim.log
+*.log
+
+# Waveform dumps
+*.vcd
+*.wlf
+*.vpd
+
+# Temporary files
+*.bak
+*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
