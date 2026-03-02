@@ -67,8 +67,7 @@ module tb_pipeline_top;
   end
   initial begin
       $dumpfile("wave.vcd");
-      $dumpvars(0, tb_pipeline_top.dut);
-      $dumpvars(0, tb_pipeline_top.pipe_if);
+      $dumpvars(0, tb_pipeline_top);
   end
 
 endmodule
