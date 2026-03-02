@@ -277,6 +277,7 @@ IE_IM exmem(
 //////////////////////////////////////////////////////////
 data_mem dmem(
     .clk(clk),
+    .reset(reset),
     .we(MemWriteM),
     .A(ALUResultM),
     .WD(RD2M),
