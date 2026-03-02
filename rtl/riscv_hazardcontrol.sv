@@ -342,6 +342,15 @@ always_ff @(posedge clk) begin
         $display("DEBUG >>> PC=0x%08h INSTR=0x%08h", PCF, InstrF);
     end
 end
+always_ff @(posedge clk) begin
+    if (!reset && PCE == 32'h00000064) begin
+        $display("EX DEBUG >>>");
+        $display("  SrcAE = %h", SrcAE);
+        $display("  SrcBE = %h", SrcBE);
+        $display("  ALUControl = %b", ALUControlE);
+        $display("  ALUResultE = %h", ALUResultE);
+    end
+end
 
 endmodule
 
