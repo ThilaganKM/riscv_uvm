@@ -18,22 +18,15 @@ module rvhazard_dbg(
     assign commit_data  = core.ResultW;
     assign commit_pc    = core.PCPlus4W - 32'd4;
     always @(posedge clk) begin
-        if (core.RegWriteW && core.rdW == 4) begin
-            $display("=== SUB COMMIT DEBUG ===");
-            $display("WB PC        = %h", commit_pc);
-            $display("WB rd        = %0d", core.rdW);
-            $display("WB Result    = %0d", core.ResultW);
-
-            $display("EX ALUControl= %0d", core.ALUControlE);
-            $display("EX ALUOp     = %0d", core.ALUOpE);
-            $display("EX funct3    = %0d", core.funct3E);
-            $display("EX funct7b5  = %0d", core.funct7b5E);
-
-            $display("EX SrcA      = %0d", core.SrcAE);
-            $display("EX SrcB      = %0d", core.SrcBE);
-
-            $display("MEM ALUResult= %0d", core.ALUResultM);
-            $display("================================");
+        if (core.rdE == 4) begin
+            $display("=== REAL EX STAGE FOR SUB ===");
+            $display("ALUOpE     = %0d", core.ALUOpE);
+            $display("funct3E    = %0d", core.funct3E);
+            $display("funct7b5E  = %0d", core.funct7b5E);
+            $display("ALUControl = %0d", core.ALUControlE);
+            $display("SrcAE      = %0d", core.SrcAE);
+            $display("SrcBE      = %0d", core.SrcBE);
+            $display("=============================");
         end
     end
 
