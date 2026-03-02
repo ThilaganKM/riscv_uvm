@@ -43,4 +43,9 @@ module register_file (
                  (we && (A2 == A3) && (A3 != 0)) ? wd3 :
                  rf[A2];
 
+`ifdef ASSERT_ON
+    // x0 must never change
+    assert property (@(posedge clk) rf[0] == 32'd0)
+        else $error("x0 register corrupted!");
+`endif
 endmodule

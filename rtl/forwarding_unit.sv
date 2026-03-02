@@ -62,4 +62,42 @@ always @(*) begin
     $display("FWD DEBUG: Rs1E=%0d Rs2E=%0d RdM=%0d RdW=%0d RegWriteM=%0b RegWriteW=%0b | ForwardAE=%0b ForwardBE=%0b",
              Rs1E, Rs2E, RdM, RdW, RegWriteM, RegWriteW, ForwardAE, ForwardBE);
 end
+
+//--------------------------------------------------
+// Assertions
+//--------------------------------------------------
+
+`ifdef ASSERT_ON
+    // MEM stage has priority over WB
+    assert property (@(posedge clk)
+        (RegWriteM && RegWriteW &&
+         (RdM == Rs1E) && (RdW == Rs1E) && (RdM != 0))
+        |-> (ForwardAE == 2'b10)
+    );
+`endif
+
+
+//--------------------------------------------------
+// Functional Coverage
+//--------------------------------------------------
+
+`ifdef COVERAGE_ON
+covergroup fwd_cg @(posedge clk);
+
+    coverpoint ForwardAE {
+        bins no_fwd   = {2'b00};
+        bins from_wb  = {2'b01};
+        bins from_mem = {2'b10};
+    }
+
+    coverpoint ForwardBE {
+        bins no_fwd   = {2'b00};
+        bins from_wb  = {2'b01};
+        bins from_mem = {2'b10};
+    }
+
+endgroup
+
+fwd_cg fwd_cov = new();
+`endif
 endmodule

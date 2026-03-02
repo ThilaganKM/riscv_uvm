@@ -32,4 +32,38 @@ assign FlushD = PCSrcE;
 assign StallF = lwStall;
 assign StallD = lwStall;
 
+//--------------------------------------------------
+// Load-Use Stall Assertion
+//--------------------------------------------------
+
+`ifdef ASSERT_ON
+    assert property (@(posedge clk)
+        (ResultSrcE0 &&
+        ((RdE == Rs1D) || (RdE == Rs2D)) &&
+        (RdE != 0))
+        |-> (StallF && StallD && FlushE)
+    ) else $error("Load-use hazard not handled correctly!");
+`endif
+
+
+//--------------------------------------------------
+// Functional Coverage
+//--------------------------------------------------
+
+`ifdef COVERAGE_ON
+covergroup hazard_cg @(posedge clk);
+
+    coverpoint StallD {
+        bins load_use = {1};
+    }
+
+    coverpoint FlushE {
+        bins branch_flush = {1};
+    }
+
+endgroup
+
+hazard_cg hz_cov = new();
+`endif
+
 endmodule

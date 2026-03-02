@@ -11,6 +11,14 @@ VLOG = vlog
 
 UVM_HOME = /home/cad/eda/Questa_2019/questasim/verilog_src/uvm-1.1d/src
 
+
+#--------------------------------------------------
+# Global Defines (Resume Mode)
+#--------------------------------------------------
+
+DEFINES = +define+ASSERT_ON +define+COVERAGE_ON
+
+
 #--------------------------------------------------
 # RTL Files
 #--------------------------------------------------
@@ -134,7 +142,18 @@ dmem:
 	$(SIM) -c tb_top +UVM_TESTNAME=data_mem_test -do "run -all"
 
 pipeline:
-	$(SIM) -c tb_pipeline_top +UVM_TESTNAME=pipeline_test -do "run -all"
+	$(SIM) -c tb_pipeline_top \
+	+UVM_TESTNAME=pipeline_test \
+	-coverage \
+	-do "run -all; coverage save pipeline.ucdb; quit"
+
+#--------------------------------------------------
+# Coverage Report
+#--------------------------------------------------
+
+coverage_report:
+	vcover report pipeline.ucdb
+
 #--------------------------------------------------
 # Clean Build
 #--------------------------------------------------
