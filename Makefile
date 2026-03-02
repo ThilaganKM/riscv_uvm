@@ -44,6 +44,8 @@ RTL = \
  rtl/ExtendUnit.sv \
  rtl/riscv_hazardcontrol.sv \
  rtl/rvhazard_dbg.sv \
+
+SVA = \
  rtl/rvhazard_sva.sv
 
 #--------------------------------------------------
@@ -110,6 +112,7 @@ compile_pipeline:
 	$(VLOG) -sv +cover=sbceft -coveropt 3 $(DEFINES) +incdir+$(UVM_HOME) $(TXN)
 	$(VLOG) -sv +cover=sbceft -coveropt 3 $(DEFINES) +incdir+$(UVM_HOME) $(PIPE_PKG)
 	$(VLOG) -sv +cover=sbceft -coveropt 3 $(DEFINES) +incdir+$(UVM_HOME) $(RTL)
+	$(VLOG) -sv +cover=sbceft -coveropt 3 $(DEFINES) +incdir+$(UVM_HOME) $(SVA)
 	$(VLOG) -sv +cover=sbceft -coveropt 3 $(DEFINES) +incdir+$(UVM_HOME) $(PIPE_TOP)
 
 #--------------------------------------------------
