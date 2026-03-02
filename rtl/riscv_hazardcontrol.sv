@@ -337,6 +337,11 @@ mux3to1 wb_mux(
     .s(ResultSrcW),
     .y(ResultW)
 );
+always_ff @(posedge clk) begin
+    if (!reset && PCF == 32'h00000064) begin
+        $display("DEBUG >>> PC=0x%08h INSTR=0x%08h", PCF, InstrF);
+    end
+end
 
 endmodule
 
