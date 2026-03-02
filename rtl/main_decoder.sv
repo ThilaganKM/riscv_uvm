@@ -49,7 +49,7 @@ module main_decoder(
             7'b0100011: controls = 11'b0_01_1_1_xx_0_00_0; // Store (S-type)
             7'b0110011: controls = 11'b1_xx_0_0_00_0_10_0; // R-type arithmetic
             7'b1100011: controls = 11'b0_10_0_0_xx_1_01_0; // Branch (B-type)
-            7'b0010011: controls = 11'b1_00_1_0_00_0_10_0; // I-type arithmetic
+            7'b0010011: controls = 11'b1_00_1_0_00_0_11_0;
             7'b1101111: controls = 11'b1_11_x_0_10_0_xx_1; // JAL
             default:    controls = 11'b0_00_0_0_00_0_00_0; // Default: no operation
         endcase
