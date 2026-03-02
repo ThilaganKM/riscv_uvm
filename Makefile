@@ -43,7 +43,8 @@ RTL = \
  rtl/Adder.sv \
  rtl/ExtendUnit.sv \
  rtl/riscv_hazardcontrol.sv \
- rtl/rvhazard_dbg.sv
+ rtl/rvhazard_dbg.sv \
+ rtl/rvhazard_sva.sv
 
 #--------------------------------------------------
 # Interface Files
