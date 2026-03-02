@@ -31,7 +31,8 @@ class pipeline_test extends uvm_test;
       if(!rand_instr.randomize())
         `uvm_fatal("RAND_FAIL","Randomization failed")
 
-      env.sb.instr_mem[i] = rand_instr.instr;
+      tb_pipeline_top.dut.core.imem.mem[i] = rand_instr.instr;
+      env.sb.instr_mem[i] = rand_instr.instr; // keep mirror in sync
 
       `uvm_info("RAND_GEN",
         $sformatf("mem[%0d] = %h", i, rand_instr.instr),
