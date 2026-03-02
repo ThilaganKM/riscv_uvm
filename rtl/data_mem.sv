@@ -36,7 +36,7 @@ module data_mem(
     integer i;
     initial begin
     for (int i=0; i<64; i++)
-        mem[i] = 0;
+        dm[i] = 0;
     end
 
 
