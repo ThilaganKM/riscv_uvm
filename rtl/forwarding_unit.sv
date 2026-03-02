@@ -41,35 +41,20 @@ module forwarding_unit(
 // Combinational logic to determine forwarding
 always_comb begin
 
-    // Forward for ALU input A (rs1)
-    if ((Rs1E == RdM) && RegWriteM && (Rs1E != 0)) begin
-        // Case 1: EX stage source matches MEM stage destination
-        // Forward result from MEM stage to EX stage input A
-        ForwardAE = 2'b10;
-    end
-    else if ((Rs1E == RdW) && RegWriteW && (Rs1E != 0)) begin
-        // Case 2: EX stage source matches WB stage destination
-        // Forward result from WB stage to EX stage input A
+    // WB priority first
+    if ((Rs1E == RdW) && RegWriteW && (Rs1E != 0))
         ForwardAE = 2'b01;
-    end
-    else begin
-        // No forwarding needed, use value from register file
+    else if ((Rs1E == RdM) && RegWriteM && (Rs1E != 0))
+        ForwardAE = 2'b10;
+    else
         ForwardAE = 2'b00;
-    end
 
-    // Forward for ALU input B (rs2)
-    if ((Rs2E == RdM) && RegWriteM && (Rs2E != 0)) begin
-        // Case 1: EX stage source matches MEM stage destination
-        ForwardBE = 2'b10;
-    end
-    else if ((Rs2E == RdW) && RegWriteW && (Rs2E != 0)) begin
-        // Case 2: EX stage source matches WB stage destination
+    if ((Rs2E == RdW) && RegWriteW && (Rs2E != 0))
         ForwardBE = 2'b01;
-    end
-    else begin
-        // No forwarding needed
+    else if ((Rs2E == RdM) && RegWriteM && (Rs2E != 0))
+        ForwardBE = 2'b10;
+    else
         ForwardBE = 2'b00;
-    end
 
 end
 // 🔥 Debug block (combinational safe)
