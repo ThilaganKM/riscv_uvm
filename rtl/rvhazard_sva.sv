@@ -1,18 +1,18 @@
 `timescale 1ns/1ps
 
-module rvhazard_sva (rvhazard core);
+module rvhazard_sva ();
 
   // ==========================================
   // Clocking block
   // ==========================================
-  default clocking cb @(posedge core.clk); endclocking
-  default disable iff (core.reset);
+  default clocking cb @(posedge clk); endclocking
+  default disable iff (reset);
 
   // ======================================================
   // 1️⃣ x0 MUST NEVER BE WRITTEN
   // ======================================================
   property x0_never_written;
-    core.RegWriteW |-> (core.rdW != 5'd0);
+    RegWriteW |-> (rdW != 5'd0);
   endproperty
 
   assert property (x0_never_written)
@@ -25,11 +25,11 @@ module rvhazard_sva (rvhazard core);
   // If EX stage is load and ID uses that rd → StallD must assert
   // ======================================================
   property load_use_stall;
-    (core.ResultSrcE[0] &&    // load in EX stage
-     (core.rdE != 5'd0) &&
-     ((core.InstrD[19:15] == core.rdE) ||
-      (core.InstrD[24:20] == core.rdE)))
-    |-> core.StallD;
+    (ResultSrcE[0] &&    // load in EX stage
+     (rdE != 5'd0) &&
+     ((InstrD[19:15] == rdE) ||
+      (InstrD[24:20] == rdE)))
+    |-> StallD;
   endproperty
 
   assert property (load_use_stall)
@@ -42,7 +42,7 @@ module rvhazard_sva (rvhazard core);
   // If PCSrcE is high → FlushD must assert
   // ======================================================
   property branch_flush;
-    core.PCSrcE |-> core.FlushD;
+    PCSrcE |-> FlushD;
   endproperty
 
   assert property (branch_flush)
@@ -55,7 +55,7 @@ module rvhazard_sva (rvhazard core);
   // If StallD → InstrD must stay stable next cycle
   // ======================================================
   property stall_holds_decode;
-    core.StallD |=> $stable(core.InstrD);
+    StallD |=> $stable(InstrD);
   endproperty
 
   assert property (stall_holds_decode)
@@ -68,7 +68,7 @@ module rvhazard_sva (rvhazard core);
   // If forwarding from MEM → SrcAE must equal ALUResultM
   // ======================================================
   property forwardA_from_MEM;
-    (core.ForwardAE == 2'b10) |-> (core.SrcAE == core.ALUResultM);
+    (ForwardAE == 2'b10) |-> (SrcAE == ALUResultM);
   endproperty
 
   assert property (forwardA_from_MEM)
@@ -77,7 +77,7 @@ module rvhazard_sva (rvhazard core);
 
 
   property forwardB_from_MEM;
-    (core.ForwardBE == 2'b10) |-> (core.SrcB == core.ALUResultM);
+    (ForwardBE == 2'b10) |-> (SrcB == ALUResultM);
   endproperty
 
   assert property (forwardB_from_MEM)
@@ -90,7 +90,7 @@ module rvhazard_sva (rvhazard core);
   // If RegWriteW asserted → rdW must not be X
   // ======================================================
   property no_unknown_writeback;
-    core.RegWriteW |-> !$isunknown(core.rdW);
+    RegWriteW |-> !$isunknown(rdW);
   endproperty
 
   assert property (no_unknown_writeback)
