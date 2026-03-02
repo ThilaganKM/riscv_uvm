@@ -1,48 +1,49 @@
 `timescale 1ns / 1ps
 
-// Hazard detection unit for a 5-stage pipelined RISC-V processor
-// Handles load-use data hazards and control hazards (branches)
 module HazardUnit(
-    input  logic [4:0] Rs1D,       // Source register 1 in Decode stage
-    input  logic [4:0] Rs2D,       // Source register 2 in Decode stage
-    input  logic [4:0] RdE,        // Destination register in EX stage
-    input  logic  PCSrcE,          // Branch taken signal in EX stage
-    input  logic  ResultSrcE0,     // Load instruction signal in EX stage
-    output logic StallF,           // Stall IF stage
-    output logic StallD,           // Stall Decode stage
-    output logic FlushE,           // Flush EX stage
-    output logic FlushD            // Flush Decode stage
+    input  logic [4:0] Rs1D,
+    input  logic [4:0] Rs2D,
+    input  logic [4:0] RdE,
+    input  logic       PCSrcE,
+    input  logic       ResultSrcE0,
+
+    output logic StallF,
+    output logic StallD,
+    output logic FlushE,
+    output logic FlushD
 );
 
-logic lwStall;  // Internal signal for load-use hazard detection
+logic lwStall;
 
-// Load-use hazard occurs when:
-// - Instruction in EX is a load
-// - Instruction in Decode reads a register being loaded
-// - Destination register is not zero (x0)
-assign lwStall = ResultSrcE0 && ((Rs1D == RdE) || (Rs2D == RdE)) && (RdE != 0);
+//--------------------------------------------------
+// Load-Use Hazard Detection
+//--------------------------------------------------
 
-// Flush EX stage if load-use hazard or branch taken
+assign lwStall = ResultSrcE0 &&
+                 ((Rs1D == RdE) || (Rs2D == RdE)) &&
+                 (RdE != 0);
+
 assign FlushE = lwStall | PCSrcE;
-
-// Flush Decode stage only if branch taken
 assign FlushD = PCSrcE;
 
-// Stall IF and Decode stages only on load-use hazard
 assign StallF = lwStall;
 assign StallD = lwStall;
 
+
 //--------------------------------------------------
-// Load-Use Stall Assertion
+// Assertions (Combinational safe)
 //--------------------------------------------------
 
 `ifdef ASSERT_ON
-    assert property (@(posedge clk)
-        (ResultSrcE0 &&
-        ((RdE == Rs1D) || (RdE == Rs2D)) &&
-        (RdE != 0))
-        |-> (StallF && StallD && FlushE)
-    ) else $error("Load-use hazard not handled correctly!");
+    always_comb begin
+        if (ResultSrcE0 &&
+            ((RdE == Rs1D) || (RdE == Rs2D)) &&
+            (RdE != 0))
+        begin
+            assert (StallF && StallD && FlushE)
+            else $error("Load-use hazard not handled correctly!");
+        end
+    end
 `endif
 
 
@@ -51,19 +52,29 @@ assign StallD = lwStall;
 //--------------------------------------------------
 
 `ifdef COVERAGE_ON
-covergroup hazard_cg @(posedge clk);
 
-    coverpoint StallD {
+covergroup hazard_cg;
+    option.per_instance = 1;
+
+    coverpoint lwStall {
         bins load_use = {1};
     }
 
-    coverpoint FlushE {
-        bins branch_flush = {1};
+    coverpoint PCSrcE {
+        bins branch_taken = {1};
     }
-
 endgroup
 
-hazard_cg hz_cov = new();
+hazard_cg hz_cov;
+
+initial begin
+    hz_cov = new();
+end
+
+always_comb begin
+    hz_cov.sample();
+end
+
 `endif
 
 endmodule
