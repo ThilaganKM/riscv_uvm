@@ -338,17 +338,19 @@ mux3to1 wb_mux(
     .y(ResultW)
 );
 always_ff @(posedge clk) begin
-    if (!reset && PCF == 32'h00000064) begin
-        $display("DEBUG >>> PC=0x%08h INSTR=0x%08h", PCF, InstrF);
-    end
+    if (!reset && PCF == 32'h000000cc)
+        $display("PC=0x%08h INSTR=0x%08h", PCF, InstrF);
 end
+
 always_ff @(posedge clk) begin
-    if (!reset && PCE == 32'h00000064) begin
+    if (!reset && PCE == 32'h000000cc) begin
         $display("EX DEBUG >>>");
-        $display("  SrcAE = %h", SrcAE);
-        $display("  SrcBE = %h", SrcBE);
-        $display("  ALUControl = %b", ALUControlE);
         $display("  ALUResultE = %h", ALUResultE);
+        $display("  ALUSrcE = %b", ALUSrcE);
+        $display("  ResultSrcE = %b", ResultSrcE);
+    end
+    if (!reset && PCPlus4M == 32'h000000d0) begin
+        $display("MEM DEBUG >>> ReadDataM = %h", ReadDataM);
     end
 end
 
