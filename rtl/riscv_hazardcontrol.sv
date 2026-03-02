@@ -311,3 +311,5 @@ mux3to1 wb_mux(
 );
 
 endmodule
+
+bind rvhazard rvhazard_sva sva_inst(.core(this));

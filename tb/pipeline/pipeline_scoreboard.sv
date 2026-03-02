@@ -12,12 +12,16 @@ class pipeline_scoreboard extends uvm_component;
   //--------------------------------------------------
   // Instruction Memory Mirror
   //--------------------------------------------------
-  logic [31:0] instr_mem [0:63];
+  logic [31:0] instr_mem [0:255];
+
+  //--------------------------------------------------
+  // Data Memory Mirror
+  //--------------------------------------------------
+  bit [31:0] data_mem [0:255];
 
   function new(string name, uvm_component parent);
     super.new(name,parent);
   endfunction
-
 
   //--------------------------------------------------
   // Build Phase
@@ -27,13 +31,45 @@ class pipeline_scoreboard extends uvm_component;
     if(!uvm_config_db#(virtual pipeline_if)::get(this,"","vif",vif))
       `uvm_fatal("PIPE_SB","VIF not set")
 
-    // Initialize architectural register file
-    foreach(regs[i])
-      regs[i] = 0;
+    foreach(regs[i]) regs[i] = 0;
+    foreach(data_mem[i]) data_mem[i] = 0;
 
-    // Mirror DUT instruction memory
     $readmemh("inst.mem", instr_mem);
 
+  endfunction
+
+
+  //--------------------------------------------------
+  // Immediate Generators
+  //--------------------------------------------------
+  function automatic logic [31:0] imm_i(logic [31:0] instr);
+    return {{20{instr[31]}}, instr[31:20]};
+  endfunction
+
+  function automatic logic [31:0] imm_s(logic [31:0] instr);
+    return {{20{instr[31]}}, instr[31:25], instr[11:7]};
+  endfunction
+
+  function automatic logic [31:0] imm_b(logic [31:0] instr);
+    return {{19{instr[31]}},
+            instr[31],
+            instr[7],
+            instr[30:25],
+            instr[11:8],
+            1'b0};
+  endfunction
+
+  function automatic logic [31:0] imm_u(logic [31:0] instr);
+    return {instr[31:12],12'b0};
+  endfunction
+
+  function automatic logic [31:0] imm_j(logic [31:0] instr);
+    return {{11{instr[31]}},
+            instr[31],
+            instr[19:12],
+            instr[20],
+            instr[30:21],
+            1'b0};
   endfunction
 
 
@@ -47,19 +83,16 @@ class pipeline_scoreboard extends uvm_component;
     logic [2:0]  funct3;
     logic [6:0]  funct7;
     logic [4:0]  rs1, rs2, rd;
-    logic [31:0] imm;
     logic [31:0] expected;
+    logic [31:0] addr;
+    logic [31:0] pc_next;
 
     forever begin
       @(posedge vif.clk);
 
-      if(vif.commit_valid && vif.commit_rd != 0) begin
+      if(vif.commit_valid) begin
 
-        //------------------------------------------
-        // Fetch instruction from mirror
-        //------------------------------------------
-        instr = instr_mem[vif.commit_pc >> 2];
-
+        instr  = instr_mem[vif.commit_pc >> 2];
         opcode = instr[6:0];
         rd     = instr[11:7];
         funct3 = instr[14:12];
@@ -67,92 +100,128 @@ class pipeline_scoreboard extends uvm_component;
         rs2    = instr[24:20];
         funct7 = instr[31:25];
 
-        expected = vif.commit_data; // default safe fallback
+        expected = 32'hDEADBEEF; // intentional poison default
 
-        //------------------------------------------
-        // Golden Model
-        //------------------------------------------
+        //--------------------------------------------------
+        // DECODE
+        //--------------------------------------------------
         case(opcode)
 
-          //--------------------------------------------------
-          // R-TYPE (0110011)
-          //--------------------------------------------------
+          //=============================
+          // R-TYPE
+          //=============================
           7'b0110011: begin
-
-            case(funct3)
-
-              3'b000: begin
-                if (funct7 == 7'b0100000)
-                  expected = regs[rs1] - regs[rs2];  // SUB
-                else
-                  expected = regs[rs1] + regs[rs2];  // ADD
-              end
-
-              3'b111: expected = regs[rs1] & regs[rs2]; // AND
-              3'b110: expected = regs[rs1] | regs[rs2]; // OR
-
-              3'b010: expected =
-                ($signed(regs[rs1]) < $signed(regs[rs2])) ? 32'd1 : 32'd0; // SLT
-
-              default: expected = vif.commit_data;
-
+            case({funct7,funct3})
+              {7'b0000000,3'b000}: expected = regs[rs1] + regs[rs2]; // ADD
+              {7'b0100000,3'b000}: expected = regs[rs1] - regs[rs2]; // SUB
+              {7'b0000000,3'b111}: expected = regs[rs1] & regs[rs2];
+              {7'b0000000,3'b110}: expected = regs[rs1] | regs[rs2];
+              {7'b0000000,3'b100}: expected = regs[rs1] ^ regs[rs2];
+              {7'b0000000,3'b001}: expected = regs[rs1] << regs[rs2][4:0];
+              {7'b0000000,3'b101}: expected = regs[rs1] >> regs[rs2][4:0];
+              {7'b0100000,3'b101}: expected = $signed(regs[rs1]) >>> regs[rs2][4:0];
+              {7'b0000000,3'b010}: expected = 
+                    ($signed(regs[rs1]) < $signed(regs[rs2])) ? 1 : 0;
+              {7'b0000000,3'b011}: expected = 
+                    (regs[rs1] < regs[rs2]) ? 1 : 0;
+              default: `uvm_error("PIPE_SB","Unsupported R-type");
             endcase
           end
 
-
-          //--------------------------------------------------
-          // I-TYPE ARITHMETIC (0010011)
-          //--------------------------------------------------
+          //=============================
+          // I-TYPE ALU
+          //=============================
           7'b0010011: begin
-
-            imm = {{20{instr[31]}}, instr[31:20]};
-
+            logic [31:0] imm = imm_i(instr);
             case(funct3)
-
-              3'b000: expected = regs[rs1] + imm; // ADDI
-              3'b111: expected = regs[rs1] & imm; // ANDI
-              3'b110: expected = regs[rs1] | imm; // ORI
-
+              3'b000: expected = regs[rs1] + imm;
+              3'b111: expected = regs[rs1] & imm;
+              3'b110: expected = regs[rs1] | imm;
+              3'b100: expected = regs[rs1] ^ imm;
               3'b010: expected =
-                ($signed(regs[rs1]) < $signed(imm)) ? 32'd1 : 32'd0; // SLTI
-
-              default: expected = vif.commit_data;
-
+                    ($signed(regs[rs1]) < $signed(imm)) ? 1 : 0;
+              3'b011: expected =
+                    (regs[rs1] < imm) ? 1 : 0;
+              3'b001: expected = regs[rs1] << instr[24:20];
+              3'b101: begin
+                if(funct7 == 7'b0100000)
+                  expected = $signed(regs[rs1]) >>> instr[24:20];
+                else
+                  expected = regs[rs1] >> instr[24:20];
+              end
+              default: `uvm_error("PIPE_SB","Unsupported I-type");
             endcase
           end
 
+          //=============================
+          // LOAD
+          //=============================
+          7'b0000011: begin
+            addr = regs[rs1] + imm_i(instr);
+            expected = data_mem[addr >> 2];
+          end
+
+          //=============================
+          // STORE
+          //=============================
+          7'b0100011: begin
+            addr = regs[rs1] + imm_s(instr);
+            data_mem[addr >> 2] = regs[rs2];
+          end
+
+          //=============================
+          // LUI
+          //=============================
+          7'b0110111: expected = imm_u(instr);
+
+          //=============================
+          // AUIPC
+          //=============================
+          7'b0010111: expected = vif.commit_pc + imm_u(instr);
+
+          //=============================
+          // JAL
+          //=============================
+          7'b1101111: expected = vif.commit_pc + 4;
+
+          //=============================
+          // JALR
+          //=============================
+          7'b1100111: expected = vif.commit_pc + 4;
+
+          default: begin
+            // ignore unsupported
+          end
         endcase
 
 
-        //------------------------------------------
-        // Compare
-        //------------------------------------------
-        if(vif.commit_data !== expected) begin
+        //--------------------------------------------------
+        // Comparison (only when writing register)
+        //--------------------------------------------------
+        if(rd != 0 && opcode != 7'b0100011) begin
 
-          `uvm_error("PIPE_SB",
-            $sformatf("Mismatch PC=%h rd=%0d Exp=%h Act=%h",
-                       vif.commit_pc,
-                       vif.commit_rd,
-                       expected,
-                       vif.commit_data))
+          if(vif.commit_data !== expected) begin
+            `uvm_error("PIPE_SB",
+              $sformatf("Mismatch PC=%h rd=%0d Exp=%h Act=%h",
+                        vif.commit_pc,
+                        rd,
+                        expected,
+                        vif.commit_data))
+          end
+          else begin
+            `uvm_info("PIPE_SB",
+              $sformatf("PASS PC=%h rd=%0d data=%h",
+                        vif.commit_pc,
+                        rd,
+                        vif.commit_data),
+              UVM_LOW)
+          end
 
+          regs[rd] = vif.commit_data;
         end
-        else begin
 
-          `uvm_info("PIPE_SB",
-            $sformatf("PASS PC=%h rd=%0d data=%h",
-                       vif.commit_pc,
-                       vif.commit_rd,
-                       vif.commit_data),
-            UVM_LOW)
-
-        end
-
-
-        //------------------------------------------
-        // Update Architectural State
-        //------------------------------------------
-        regs[vif.commit_rd] = vif.commit_data;
+        // Enforce x0 invariant
+        regs[0] = 0;
 
       end
     end
