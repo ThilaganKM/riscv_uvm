@@ -7,18 +7,31 @@ module Alu_decoder(
 
 always_comb begin
     case (ALUOp)
-        2'b00: ALUControl = 3'b000; // ADD (load/store)
-        2'b01: ALUControl = 3'b001; // SUB (branch compare)
-        2'b10: begin
+
+        2'b00: ALUControl = 3'b000; // ADD
+
+        2'b01: ALUControl = 3'b001; // SUB
+
+        2'b10: begin // R-type
             case (funct3)
-                3'b000: ALUControl = funct7b5 ? 3'b001 : 3'b000; // SUB / ADD
-                3'b010: ALUControl = 3'b100; // SLT
-                3'b110: ALUControl = 3'b011; // OR
-                3'b111: ALUControl = 3'b010; // AND
+                3'b000: ALUControl = funct7b5 ? 3'b001 : 3'b000;
+                3'b010: ALUControl = 3'b100;
+                3'b110: ALUControl = 3'b011;
+                3'b111: ALUControl = 3'b010;
                 default: ALUControl = 3'b000;
             endcase
         end
-        default: ALUControl = 3'b000;
+
+        2'b11: begin // I-type arithmetic
+            case (funct3)
+                3'b000: ALUControl = 3'b000; // ADDI always ADD
+                3'b010: ALUControl = 3'b100; // SLTI
+                3'b110: ALUControl = 3'b011; // ORI
+                3'b111: ALUControl = 3'b010; // ANDI
+                default: ALUControl = 3'b000;
+            endcase
+        end
+
     endcase
 end
 
