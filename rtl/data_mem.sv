@@ -10,7 +10,7 @@ module data_mem(
     logic [31:0] dm [63:0];
 
     // Asynchronous read
-    assign ReadData = dm[A[31:2]];
+    assign ReadData = dm[A[7:2]];
 
     // Single procedural driver
     always_ff @(posedge clk) begin
@@ -21,7 +21,7 @@ module data_mem(
         end
 
         else if (we) begin
-            dm[A[31:2]] <= WD;
+            dm[A[7:2]] <= WD;
         end
 
     end
