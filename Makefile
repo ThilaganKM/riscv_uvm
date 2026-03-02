@@ -43,7 +43,7 @@ RTL = \
  rtl/Adder.sv \
  rtl/ExtendUnit.sv \
  rtl/riscv_hazardcontrol.sv \
- rtl/rvhazard_dbg.sv \
+ rtl/rvhazard_dbg.sv
 
 SVA = \
  rtl/rvhazard_sva.sv
@@ -79,8 +79,7 @@ TBPKG = \
  tb/pc_tb_pkg.sv
 
 PIPE_PKG = \
- tb/pipeline/pipeline_pkg.sv \
- tb/pipeline/riscv_rand_instr.sv
+ tb/pipeline/pipeline_pkg.sv
 
 #--------------------------------------------------
 # Top Module

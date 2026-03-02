@@ -13,29 +13,35 @@ class pipeline_test extends uvm_test;
     env = pipeline_env::type_id::create("env",this);
   endfunction
 
+
   task run_phase(uvm_phase phase);
 
+    // 🔥 DECLARATIONS MUST COME FIRST
     riscv_rand_instr rand_instr;
 
     phase.raise_objection(this);
 
-    // Generate 64 random instructions
+    // --------------------------------
+    // Random Instruction Generation
+    // --------------------------------
     for(int i=0;i<64;i++) begin
 
-        rand_instr = new();
+      rand_instr = new();
 
-        if(!rand_instr.randomize())
+      if(!rand_instr.randomize())
         `uvm_fatal("RAND_FAIL","Randomization failed")
 
-        env.sb.instr_mem[i] = rand_instr.instr;
+      env.sb.instr_mem[i] = rand_instr.instr;
 
-        `uvm_info("RAND_GEN",
+      `uvm_info("RAND_GEN",
         $sformatf("mem[%0d] = %h", i, rand_instr.instr),
         UVM_LOW)
 
     end
 
-    // Run simulation
+    // --------------------------------
+    // Run Pipeline
+    // --------------------------------
     repeat(500) @(posedge env.sb.vif.clk);
 
     phase.drop_objection(this);
