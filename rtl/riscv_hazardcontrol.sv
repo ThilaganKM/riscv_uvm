@@ -284,7 +284,7 @@ IE_IM exmem(
     .ResultSrcE(ResultSrcE),
     .rdE(rdE),
     .PCPlus4E(PCPlus4E),
-
+    .flush(FlushE),
     .ALUResultM(ALUResultM),
     .RD2M(RD2M),
     .RegWriteM(RegWriteM),

@@ -33,7 +33,7 @@ module IE_IM(
     input  logic [1:0]  ResultSrcE,
     input  logic [4:0]  rdE,        // Destination register
     input  logic [31:0] PCPlus4E,   // PC+4 from Execute stage
-
+    input logic flush,
     output logic [31:0] ALUResultM, // Outputs to Memory stage
     output logic [31:0] RD2M,
     output logic        RegWriteM,
@@ -45,8 +45,7 @@ module IE_IM(
 
     // Sequential logic for IE/IM pipeline register
     always_ff @(posedge clk) begin
-        if (reset) begin
-            // Reset all outputs to 0
+        if (reset || flush) begin
             ALUResultM  <= 32'b0;
             RD2M        <= 32'b0;
             rdM         <= 5'b0;
@@ -54,8 +53,8 @@ module IE_IM(
             RegWriteM   <= 1'b0;
             MemWriteM   <= 1'b0;
             ResultSrcM  <= 2'b0;
-        end else begin
-            // Transfer signals from Execute stage to Memory stage
+        end
+        else begin
             ALUResultM  <= ALUResultE;
             RD2M        <= RD2E;
             rdM         <= rdE;
