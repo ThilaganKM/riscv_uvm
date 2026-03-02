@@ -8,7 +8,7 @@ class riscv_rand_instr;
   rand bit [4:0]  rs1;
   rand bit [4:0]  rs2;
   rand bit [2:0]  funct3;
-  rand bit        funct7b5;
+  rand bit        funct7;
   rand bit signed [11:0] imm_i;
 
   bit [31:0] instr;
