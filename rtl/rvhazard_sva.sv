@@ -26,8 +26,8 @@ module rvhazard_sva (
   // 1️⃣ x0 NEVER WRITTEN
   assert property (@(posedge clk)
                    disable iff (reset)
-                   RegWriteW |-> (rdW != 5'd0))
-    else $error("SVA FAIL: Attempt to write x0");
+                   core.regfile[0] == 32'd0)
+  else $error("SVA FAIL: x0 corrupted");
 
 
   // 2️⃣ LOAD-USE MUST STALL

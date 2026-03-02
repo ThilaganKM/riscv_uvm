@@ -34,7 +34,7 @@ class pipeline_scoreboard extends uvm_component;
     foreach(regs[i]) regs[i] = 0;
     foreach(data_mem[i]) data_mem[i] = 0;
 
-    $readmemh("inst.mem", instr_mem);
+
 
   endfunction
 
@@ -92,7 +92,7 @@ class pipeline_scoreboard extends uvm_component;
 
       if(vif.commit_valid) begin
 
-        instr  = instr_mem[vif.commit_pc >> 2];
+        instr = vif.imem[vif.commit_pc >> 2];
         opcode = instr[6:0];
         rd     = instr[11:7];
         funct3 = instr[14:12];
