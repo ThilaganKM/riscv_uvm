@@ -143,10 +143,10 @@ dmem:
 
 pipeline:
 	$(SIM) -c tb_pipeline_top \
-	+UVM_TESTNAME=pipeline_test \
 	-coverage \
-	-do "run -all; coverage save pipeline.ucdb; quit"
-
+	-voptargs="+cover=sbceft" \
+	+UVM_TESTNAME=pipeline_test \
+	-do "run -all; coverage save -onexit pipeline.ucdb; quit"
 #--------------------------------------------------
 # Coverage Report
 #--------------------------------------------------
