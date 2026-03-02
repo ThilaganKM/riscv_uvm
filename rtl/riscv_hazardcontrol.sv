@@ -312,4 +312,25 @@ mux3to1 wb_mux(
 
 endmodule
 
-bind rvhazard rvhazard_sva sva_inst();
+bind rvhazard rvhazard_sva sva_inst (
+    .clk(clk),
+    .reset(reset),
+
+    .RegWriteW(RegWriteW),
+    .rdW(rdW),
+
+    .StallD(StallD),
+    .FlushD(FlushD),
+    .PCSrcE(PCSrcE),
+
+    .InstrD(InstrD),
+
+    .rdE(rdE),
+    .ResultSrcE(ResultSrcE),
+
+    .ForwardAE(ForwardAE),
+    .ForwardBE(ForwardBE),
+    .SrcAE(SrcAE),
+    .SrcB(SrcB),
+    .ALUResultM(ALUResultM)
+);
