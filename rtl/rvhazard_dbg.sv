@@ -25,20 +25,15 @@ module rvhazard_dbg(
             $display("WB Result    = %0d", core.ResultW);
 
             $display("EX ALUControl= %0d", core.ALUControlE);
+            $display("EX ALUOp     = %0d", core.ALUOpE);
+            $display("EX funct3    = %0d", core.funct3E);
+            $display("EX funct7b5  = %0d", core.funct7b5E);
+
             $display("EX SrcA      = %0d", core.SrcAE);
             $display("EX SrcB      = %0d", core.SrcBE);
 
             $display("MEM ALUResult= %0d", core.ALUResultM);
             $display("================================");
-        end
-    end
-    always @(posedge clk) begin
-        if (core.rdE == 4) begin
-            $display("ID/EX STAGE DEBUG:");
-            $display("ALUControlD = %0d", core.ALUControlD);
-            $display("ALUControlE = %0d", core.ALUControlE);
-            $display("funct3      = %0d", core.InstrD[14:12]);
-            $display("funct7b5    = %0d", core.InstrD[30]);
         end
     end
 
