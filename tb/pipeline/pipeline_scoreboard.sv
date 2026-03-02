@@ -124,7 +124,9 @@ class pipeline_scoreboard extends uvm_component;
                     ($signed(regs[rs1]) < $signed(regs[rs2])) ? 1 : 0;
               {7'b0000000,3'b011}: expected = 
                     (regs[rs1] < regs[rs2]) ? 1 : 0;
-              default: `uvm_error("PIPE_SB","Unsupported R-type");
+              default: begin
+                `uvm_error("PIPE_SB","Unsupported R-type");
+              end
             endcase
           end
 
@@ -149,7 +151,9 @@ class pipeline_scoreboard extends uvm_component;
                 else
                   expected = regs[rs1] >> instr[24:20];
               end
-              default: `uvm_error("PIPE_SB","Unsupported I-type");
+              default: begin
+                `uvm_error("PIPE_SB","Unsupported I-type");
+              end
             endcase
           end
 
