@@ -65,5 +65,9 @@ module tb_pipeline_top;
     uvm_config_db#(virtual pipeline_if)::set(null,"*","vif",pipe_if);
     run_test("pipeline_test");
   end
+  initial begin
+      $dumpfile("wave.vcd");
+      $dumpvars(0, tb_pipeline_top);
+  end
 
 endmodule
