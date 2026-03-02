@@ -33,14 +33,22 @@ class riscv_rand_instr;
   // R-Type constraints
   // --------------------------------------------
   constraint rtype_c {
-    if(opcode == 7'b0110011) {
+    if (opcode == 7'b0110011) {
 
-      funct3 inside {3'b000,3'b010,3'b110,3'b111};
+        // ADD
+        (funct3 == 3'b000 && funct7 == 7'b0000000) ||
 
-      if(funct3 == 3'b000)
-        funct7b5 inside {0,1};
-      else
-        funct7b5 == 0;
+        // SUB
+        (funct3 == 3'b000 && funct7 == 7'b0100000) ||
+
+        // AND
+        (funct3 == 3'b111 && funct7 == 7'b0000000) ||
+
+        // OR
+        (funct3 == 3'b110 && funct7 == 7'b0000000) ||
+
+        // SLT
+        (funct3 == 3'b010 && funct7 == 7'b0000000);
     }
   }
 
@@ -48,13 +56,18 @@ class riscv_rand_instr;
   // I-Type constraints
   // --------------------------------------------
   constraint itype_c {
-    if(opcode == 7'b0010011) {
+    if (opcode == 7'b0010011) {
 
-      funct3 inside {3'b000,3'b010,3'b110,3'b111};
-      funct7b5 == 0;
+        funct3 inside {
+        3'b000, // ADDI
+        3'b111, // ANDI
+        3'b110, // ORI
+        3'b010  // SLTI
+        };
 
-      imm_i >= -32;
-      imm_i <= 31;
+        // Prevent shift encodings
+        if (funct3 == 3'b001 || funct3 == 3'b101)
+        funct7 == 7'b0000000;
     }
   }
 
