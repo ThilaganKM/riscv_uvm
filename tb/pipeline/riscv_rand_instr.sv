@@ -60,7 +60,10 @@ class riscv_rand_instr;
       funct7b5 == 0;
 
       // limit immediate range for stability
-      imm_i inside {[-32:31]};
+      constraint imm_c {
+        imm_i >= -32;
+        imm_i <= 31;
+      }
     }
   }
 
