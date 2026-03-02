@@ -2,7 +2,8 @@
 
 module rvhazard(
     input logic clk,
-    input logic reset
+    input logic reset,
+    pipeline_if vif
 );
 
 /////////////////////////
@@ -95,7 +96,11 @@ program_counter pc(
     .PC(PCF)
 );
 
-instr_mem imem(.A(PCF), .RD(InstrF));
+instr_mem imem(
+    .A(PCF),
+    .RD(InstrF),
+    .mem(vif.imem)
+);
 
 //////////////////////////////////////////////////////////
 // IF/ID

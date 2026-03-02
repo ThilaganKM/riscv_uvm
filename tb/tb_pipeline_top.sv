@@ -27,11 +27,15 @@ module tb_pipeline_top;
   rvhazard_dbg dut (
     .clk(clk),
     .reset(reset),
-    .commit_valid(pipe_if.commit_valid),
-    .commit_pc(pipe_if.commit_pc),
-    .commit_rd(pipe_if.commit_rd),
-    .commit_data(pipe_if.commit_data)
+    .pipe_if(pipe_if)
   );
+    //----------------------------------------
+    // Default Memory Initialization (NOP)
+    //----------------------------------------
+  initial begin
+    for(int i=0;i<256;i++)
+        pipe_if.imem[i] = 32'h00000013; // ADDI x0,x0,0
+  end
 
   //----------------------------------------
   // Reset
