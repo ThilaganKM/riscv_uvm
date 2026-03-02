@@ -231,11 +231,16 @@ Alu_decoder alu_dec(
     .ALUControl(ALUControlE)
 );
 
+
+logic [31:0] ForwardM;
+
+assign ForwardM =
+    (ResultSrcM == 2'b01) ? ReadDataM : ALUResultM;
 //////////////////////////////////////////////////////////
 // Forwarding MUXes
 //////////////////////////////////////////////////////////
-mux3to1 muxA(.d0(RD1E), .d1(ResultW), .d2(ALUResultM), .s(ForwardAE), .y(SrcAE));
-mux3to1 muxB(.d0(RD2E), .d1(ResultW), .d2(ALUResultM), .s(ForwardBE), .y(SrcB));
+mux3to1 muxA(.d0(RD1E), .d1(ResultW), .d2(ForwardM), .s(ForwardAE), .y(SrcAE));
+mux3to1 muxB(.d0(RD2E), .d1(ResultW), .d2(ForwardM), .s(ForwardBE), .y(SrcB));
 mux2 muxImm(.d0(SrcB), .d1(ImmExtendE), .s(ALUSrcE), .y(SrcBE));
 
 //////////////////////////////////////////////////////////
