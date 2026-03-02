@@ -34,6 +34,10 @@ module data_mem(
     // Memory array (64 words, 32-bit each)
     logic [31:0] dm [63:0];
     integer i;
+    initial begin
+    for (int i=0; i<64; i++)
+        mem[i] = 0;
+    end
 
 
     // Asynchronous read
