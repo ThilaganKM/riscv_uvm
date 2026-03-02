@@ -118,6 +118,7 @@ IF_ID ifid(
 //////////////////////////////////////////////////////////
 register_file rf(
     .clk(clk),
+    .reset(reset),
     .A1(InstrD[19:15]),
     .A2(InstrD[24:20]),
     .A3(rdW),
