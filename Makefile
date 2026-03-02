@@ -105,11 +105,11 @@ compile:
 compile_pipeline:
 	vlib work
 
-	$(VLOG) -sv -coverage -coveropt 3 $(DEFINES) +incdir+$(UVM_HOME) $(INTERFACES)
-	$(VLOG) -sv -coverage -coveropt 3 $(DEFINES) +incdir+$(UVM_HOME) $(TXN)
-	$(VLOG) -sv -coverage -coveropt 3 $(DEFINES) +incdir+$(UVM_HOME) $(PIPE_PKG)
-	$(VLOG) -sv -coverage -coveropt 3 $(DEFINES) +incdir+$(UVM_HOME) $(RTL)
-	$(VLOG) -sv -coverage -coveropt 3 $(DEFINES) +incdir+$(UVM_HOME) $(PIPE_TOP)
+	$(VLOG) -sv +cover=sbceft -coveropt 3 $(DEFINES) +incdir+$(UVM_HOME) $(INTERFACES)
+	$(VLOG) -sv +cover=sbceft -coveropt 3 $(DEFINES) +incdir+$(UVM_HOME) $(TXN)
+	$(VLOG) -sv +cover=sbceft -coveropt 3 $(DEFINES) +incdir+$(UVM_HOME) $(PIPE_PKG)
+	$(VLOG) -sv +cover=sbceft -coveropt 3 $(DEFINES) +incdir+$(UVM_HOME) $(RTL)
+	$(VLOG) -sv +cover=sbceft -coveropt 3 $(DEFINES) +incdir+$(UVM_HOME) $(PIPE_TOP)
 
 #--------------------------------------------------
 # Run Tests
