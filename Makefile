@@ -142,12 +142,9 @@ dmem:
 	$(SIM) -c tb_top +UVM_TESTNAME=data_mem_test -do "run -all"
 
 pipeline:
-	$(SIM) -c \
-	-coverage \
-	-novopt \
-	tb_pipeline_top \
+	$(SIM) -c -coverage tb_pipeline_top \
 	+UVM_TESTNAME=pipeline_test \
-	-do "run -all; coverage save pipeline.ucdb; quit"
+	-do "run -all; coverage save -codeAll pipeline.ucdb; quit"
 #--------------------------------------------------
 # Coverage Report
 #--------------------------------------------------
